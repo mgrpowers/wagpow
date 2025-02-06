@@ -30,21 +30,24 @@ a:hover {
 }
 
 h1 {
-  font-size: 8em;
-  line-height: 1em;
+  font-size: 2em;
+  line-height: 1.4em;
   font-family: "SaveurSansRegular";
   padding: 0;
   margin: 0;
 }
 
 h2 {
-  font-size: 3em;
-  line-height: 0.2em;
+  font-size: 1.2em;
+  line-height: 0.9em;
+  margin-top: 1em;
 }
 
 p {
-  font-size: 1.6em;
-  line-height: 1em;
+  font-size: 1em;
+  line-height: 1.4em;
+  font-family: "Heebo", serif;
+  font-weight: 100;
 }
 
 ::-ms-input-placeholder {
@@ -87,6 +90,7 @@ section {
   justify-content: center;
   flex-direction: column;
   transition: all 0.3s;
+  padding: 1em;
 }
 
 input {
@@ -105,7 +109,7 @@ input {
 }
 
 input[type=text] {
-  width: 150px;
+  width: 90%;
 }
 
 @media screen and (min-width: 600px) {
@@ -118,7 +122,7 @@ button {
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 2.2em;
-  font-size: 2em;
+  font-size: 1em;
   background-color: #ff9408;
   cursor: pointer;
   transition: border-color 0.25s;
@@ -157,27 +161,7 @@ body {
   flex-direction: column;
   align-items: center;
   width: 100%;
-}
-.rsvp-form label {
-  margin-right: 1em;
-}
-.rsvp-form input[type=text] {
-  width: 300px;
-}
-.rsvp-form button {
-  margin: 0.5em;
-}
-.rsvp-form.rsvp-form-find {
-  flex-direction: row;
-  justify-content: center;
-}
-.rsvp-form.rsvp-form-find input {
-  width: 300px;
-  border-radius: 8px 0 0 8px;
-}
-.rsvp-form.rsvp-form-find button {
-  border-radius: 0 8px 8px 0;
-  margin: 0;
+  justify-content: space-between;
 }
 
 .rsvp-form-row {
@@ -185,14 +169,17 @@ body {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  width: 70%;
-  margin-top: 1em;
+  width: 100%;
+  margin-bottom: 1em;
 }
 
 .rsvp-form-options {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+}
+.rsvp-form-options label {
+  font-size: 0.6em;
 }
 
 .rsvp-form-input {
@@ -260,4 +247,79 @@ body {
 .wp-error {
   color: red;
   text-align: center;
+}
+
+@media screen and (min-width: 768px) {
+  h1 {
+    font-size: 4em;
+    line-height: 1em;
+    font-family: "SaveurSansRegular";
+    padding: 0;
+    margin: 0;
+  }
+  h2 {
+    font-size: 2em;
+    line-height: 0.2em;
+  }
+  p {
+    font-size: 1.6em;
+    line-height: 1em;
+  }
+  button {
+    font-size: 2em;
+  }
+}
+.rsvp-form.rsvp-form-find button {
+  margin: 1em 0 0;
+}
+
+@media screen and (min-width: 960px) {
+  h1 {
+    font-size: 8em;
+    line-height: 1em;
+    font-family: "SaveurSansRegular";
+    padding: 0;
+    margin: 0;
+  }
+  h2 {
+    font-size: 3em;
+    line-height: 0.2em;
+    margin-top: 2em;
+  }
+  p {
+    font-size: 1.6em;
+    line-height: 1.2em;
+  }
+  .rsvp-form.rsvp-form-find {
+    flex-direction: row;
+    justify-content: center;
+    flex-direction: row;
+  }
+  .rsvp-form.rsvp-form-find input {
+    width: 300px;
+    border-radius: 8px 0 0 8px;
+  }
+  .rsvp-form.rsvp-form-find button {
+    border-radius: 0 8px 8px 0;
+    margin: 0;
+  }
+  .rsvp-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 70%;
+  }
+  .rsvp-form .rsvp-form-options label {
+    margin-right: 1em;
+    font-size: 1em;
+  }
+  .rsvp-form input[type=text] {
+    width: 300px;
+  }
+  .rsvp-form button {
+    margin: 0.5em;
+  }
+  .rsvp-form-row {
+    width: 100%;
+  }
 }

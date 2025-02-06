@@ -34220,11 +34220,8 @@ var Schedule = () => {
       /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
         children: "Please join us the night before our wedding as we welcome you to Mexico City."
       }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
-        children: "Dress code: [thoughts?]"
-      }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("h2", {
-        children: "Saturday, August 9, 2025, 5:30 p.m. to 2:00 a.m."
+        children: "Saturday, August 9, 2025, evening"
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
         children: "Wedding"
@@ -34233,7 +34230,7 @@ var Schedule = () => {
         children: "Please join us at General Prim for our wedding ceremony. Drinks, dinner, and celebration to follow."
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
-        children: "Dress code: Cocktail/formal"
+        children: "Dress code: Cocktail/Formal"
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("h2", {
         children: "Sunday, August 10, 2025"

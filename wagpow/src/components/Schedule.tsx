@@ -8,14 +8,14 @@ export const Schedule = () => {
 				Please join us the night before our wedding as we welcome you to
 				Mexico City.
 			</p>
-			<p>Dress code: [thoughts?]</p>
-			<h2>Saturday, August 9, 2025, 5:30 p.m. to 2:00 a.m.</h2>
+			{/* <p>Dress code: [thoughts?]</p> */}
+			<h2>Saturday, August 9, 2025, evening</h2>
 			<p>Wedding</p>
 			<p>
 				Please join us at General Prim for our wedding ceremony. Drinks,
 				dinner, and celebration to follow.
 			</p>
-			<p>Dress code: Cocktail/formal</p>
+			<p>Dress code: Cocktail/Formal</p>
 			<h2>Sunday, August 10, 2025</h2>
 			<p>Post-wedding brunch</p>
 			<p>Please join us for a post-wedding brunch</p>
