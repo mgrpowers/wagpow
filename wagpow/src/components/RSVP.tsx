@@ -18,6 +18,7 @@ interface member {
 interface Family {
 	name: string
 	members: member[]
+	email: string
 }
 
 export const Step = ({ children }: { children: React.ReactNode }) => {
@@ -84,6 +85,12 @@ export const RSVP = () => {
 			updatedMember[key] = value
 		}
 
+		setFamily(() => updatedFamily)
+	}
+
+	const updateFamilyEmail = (email: string) => {
+		const updatedFamily = { ...family } as Family
+		updatedFamily.email = email
 		setFamily(() => updatedFamily)
 	}
 
@@ -196,15 +203,31 @@ export const RSVP = () => {
 								</div>
 							)
 						})}
-						<button onClick={handleSubmit} type="submit">
-							RSVP
-						</button>
+						<div className="rsvp-form-row">
+							<label
+								className={`rsvp-form-email ${family?.members.some((m) => m.attending) && "active"}`}
+							>
+								Please add an email
+								<input
+									placeholder="email"
+									name="email"
+									type="email"
+									onChange={(e) =>
+										updateFamilyEmail(e.target.value)
+									}
+								/>
+							</label>
+
+							<button onClick={handleSubmit} type="submit">
+								RSVP
+							</button>
+						</div>
 					</form>
 				</Step>
 			)}
 			{step === 1 && (
 				<Step>
-					<h3>Step 1: Find Your Crew</h3>
+					<h3>Step 1: Search for a member of your family</h3>
 
 					<form className="rsvp-form rsvp-form-find">
 						<input
