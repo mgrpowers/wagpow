@@ -29643,11 +29643,22 @@ function __PRIVATE_estimateByteSize(e) {
       throw fail();
   }
 }
+function __PRIVATE_refValue(e, t) {
+  return {
+    referenceValue: `projects/${e.projectId}/databases/${e.database}/documents/${t.path.canonicalString()}`
+  };
+}
 function isInteger(e) {
   return !!e && "integerValue" in e;
 }
 function isArray(e) {
   return !!e && "arrayValue" in e;
+}
+function __PRIVATE_isNullValue(e) {
+  return !!e && "nullValue" in e;
+}
+function __PRIVATE_isNanValue(e) {
+  return !!e && "doubleValue" in e && isNaN(Number(e.doubleValue));
 }
 function __PRIVATE_isMapValue(e) {
   return !!e && "mapValue" in e;
@@ -30090,6 +30101,9 @@ function __PRIVATE_targetEquals(e, t) {
       return false;
   return e.collectionGroup === t.collectionGroup && (!!e.path.isEqual(t.path) && (!!__PRIVATE_boundEquals(e.startAt, t.startAt) && __PRIVATE_boundEquals(e.endAt, t.endAt)));
 }
+function __PRIVATE_targetIsDocumentTarget(e) {
+  return DocumentKey.isDocumentKey(e.path) && e.collectionGroup === null && e.filters.length === 0;
+}
 class __PRIVATE_QueryImpl {
   constructor(e, t = null, n = [], r = [], i = null, s = "F", o = null, _ = null) {
     this.path = e, this.collectionGroup = t, this.explicitOrderBy = n, this.filters = r, this.limit = i, this.limitType = s, this.startAt = o, this.endAt = _, this.ce = null, this.le = null, this.he = null, this.startAt, this.endAt;
@@ -30144,6 +30158,10 @@ function __PRIVATE__queryToTarget(e, t) {
     return __PRIVATE_newTarget(e.path, e.collectionGroup, t, e.filters, e.limit, n, r);
   }
 }
+function __PRIVATE_queryWithAddedFilter(e, t) {
+  const n = e.filters.concat([t]);
+  return new __PRIVATE_QueryImpl(e.path, e.collectionGroup, e.explicitOrderBy.slice(), n, e.limit, e.limitType, e.startAt, e.endAt);
+}
 function __PRIVATE_queryWithLimit(e, t, n) {
   return new __PRIVATE_QueryImpl(e.path, e.collectionGroup, e.explicitOrderBy.slice(), e.filters.slice(), t, n, e.startAt, e.endAt);
 }
@@ -30188,6 +30206,9 @@ function __PRIVATE_queryMatches(e, t) {
       return false;
     return true;
   }(e, t);
+}
+function __PRIVATE_queryCollectionGroup(e) {
+  return e.collectionGroup || (e.path.length % 2 == 1 ? e.path.lastSegment() : e.path.get(e.path.length - 2));
 }
 function __PRIVATE_newQueryComparator(e) {
   return (t, n) => {
@@ -30646,6 +30667,11 @@ class Overlay {
     }`;
   }
 }
+class ExistenceFilter {
+  constructor(e, t) {
+    this.count = e, this.unchangedNames = t;
+  }
+}
 var le;
 var he;
 function __PRIVATE_isPermanentError(e) {
@@ -30715,7 +30741,363 @@ function __PRIVATE_mapCodeFromRpcCode(e) {
   }
 }
 (he = le || (le = {}))[he.OK = 0] = "OK", he[he.CANCELLED = 1] = "CANCELLED", he[he.UNKNOWN = 2] = "UNKNOWN", he[he.INVALID_ARGUMENT = 3] = "INVALID_ARGUMENT", he[he.DEADLINE_EXCEEDED = 4] = "DEADLINE_EXCEEDED", he[he.NOT_FOUND = 5] = "NOT_FOUND", he[he.ALREADY_EXISTS = 6] = "ALREADY_EXISTS", he[he.PERMISSION_DENIED = 7] = "PERMISSION_DENIED", he[he.UNAUTHENTICATED = 16] = "UNAUTHENTICATED", he[he.RESOURCE_EXHAUSTED = 8] = "RESOURCE_EXHAUSTED", he[he.FAILED_PRECONDITION = 9] = "FAILED_PRECONDITION", he[he.ABORTED = 10] = "ABORTED", he[he.OUT_OF_RANGE = 11] = "OUT_OF_RANGE", he[he.UNIMPLEMENTED = 12] = "UNIMPLEMENTED", he[he.INTERNAL = 13] = "INTERNAL", he[he.UNAVAILABLE = 14] = "UNAVAILABLE", he[he.DATA_LOSS = 15] = "DATA_LOSS";
+var Pe = null;
+function __PRIVATE_newTextEncoder() {
+  return new TextEncoder;
+}
 var Te = new Integer([4294967295, 4294967295], 0);
+function __PRIVATE_getMd5HashValue(e) {
+  const t = __PRIVATE_newTextEncoder().encode(e), n = new Md5;
+  return n.update(t), new Uint8Array(n.digest());
+}
+function __PRIVATE_get64BitUints(e) {
+  const t = new DataView(e.buffer), n = t.getUint32(0, true), r = t.getUint32(4, true), i = t.getUint32(8, true), s = t.getUint32(12, true);
+  return [new Integer([n, r], 0), new Integer([i, s], 0)];
+}
+
+class BloomFilter {
+  constructor(e, t, n) {
+    if (this.bitmap = e, this.padding = t, this.hashCount = n, t < 0 || t >= 8)
+      throw new __PRIVATE_BloomFilterError(`Invalid padding: ${t}`);
+    if (n < 0)
+      throw new __PRIVATE_BloomFilterError(`Invalid hash count: ${n}`);
+    if (e.length > 0 && this.hashCount === 0)
+      throw new __PRIVATE_BloomFilterError(`Invalid hash count: ${n}`);
+    if (e.length === 0 && t !== 0)
+      throw new __PRIVATE_BloomFilterError(`Invalid padding when bitmap length is 0: ${t}`);
+    this.Te = 8 * e.length - t, this.Ie = Integer.fromNumber(this.Te);
+  }
+  de(e, t, n) {
+    let r = e.add(t.multiply(Integer.fromNumber(n)));
+    return r.compare(Te) === 1 && (r = new Integer([r.getBits(0), r.getBits(1)], 0)), r.modulo(this.Ie).toNumber();
+  }
+  Ee(e) {
+    return (this.bitmap[Math.floor(e / 8)] & 1 << e % 8) != 0;
+  }
+  mightContain(e) {
+    if (this.Te === 0)
+      return false;
+    const t = __PRIVATE_getMd5HashValue(e), [n, r] = __PRIVATE_get64BitUints(t);
+    for (let e2 = 0;e2 < this.hashCount; e2++) {
+      const t2 = this.de(n, r, e2);
+      if (!this.Ee(t2))
+        return false;
+    }
+    return true;
+  }
+  static create(e, t, n) {
+    const r = e % 8 == 0 ? 0 : 8 - e % 8, i = new Uint8Array(Math.ceil(e / 8)), s = new BloomFilter(i, r, t);
+    return n.forEach((e2) => s.insert(e2)), s;
+  }
+  insert(e) {
+    if (this.Te === 0)
+      return;
+    const t = __PRIVATE_getMd5HashValue(e), [n, r] = __PRIVATE_get64BitUints(t);
+    for (let e2 = 0;e2 < this.hashCount; e2++) {
+      const t2 = this.de(n, r, e2);
+      this.Ae(t2);
+    }
+  }
+  Ae(e) {
+    const t = Math.floor(e / 8), n = e % 8;
+    this.bitmap[t] |= 1 << n;
+  }
+}
+
+class __PRIVATE_BloomFilterError extends Error {
+  constructor() {
+    super(...arguments), this.name = "BloomFilterError";
+  }
+}
+
+class RemoteEvent {
+  constructor(e, t, n, r, i) {
+    this.snapshotVersion = e, this.targetChanges = t, this.targetMismatches = n, this.documentUpdates = r, this.resolvedLimboDocuments = i;
+  }
+  static createSynthesizedRemoteEventForCurrentChange(e, t, n) {
+    const r = new Map;
+    return r.set(e, TargetChange.createSynthesizedTargetChangeForCurrentChange(e, t, n)), new RemoteEvent(SnapshotVersion.min(), r, new SortedMap(__PRIVATE_primitiveComparator), __PRIVATE_mutableDocumentMap(), __PRIVATE_documentKeySet());
+  }
+}
+
+class TargetChange {
+  constructor(e, t, n, r, i) {
+    this.resumeToken = e, this.current = t, this.addedDocuments = n, this.modifiedDocuments = r, this.removedDocuments = i;
+  }
+  static createSynthesizedTargetChangeForCurrentChange(e, t, n) {
+    return new TargetChange(n, t, __PRIVATE_documentKeySet(), __PRIVATE_documentKeySet(), __PRIVATE_documentKeySet());
+  }
+}
+
+class __PRIVATE_DocumentWatchChange {
+  constructor(e, t, n, r) {
+    this.Re = e, this.removedTargetIds = t, this.key = n, this.Ve = r;
+  }
+}
+
+class __PRIVATE_ExistenceFilterChange {
+  constructor(e, t) {
+    this.targetId = e, this.me = t;
+  }
+}
+
+class __PRIVATE_WatchTargetChange {
+  constructor(e, t, n = ByteString.EMPTY_BYTE_STRING, r = null) {
+    this.state = e, this.targetIds = t, this.resumeToken = n, this.cause = r;
+  }
+}
+
+class __PRIVATE_TargetState {
+  constructor() {
+    this.fe = 0, this.ge = __PRIVATE_snapshotChangesMap(), this.pe = ByteString.EMPTY_BYTE_STRING, this.ye = false, this.we = true;
+  }
+  get current() {
+    return this.ye;
+  }
+  get resumeToken() {
+    return this.pe;
+  }
+  get Se() {
+    return this.fe !== 0;
+  }
+  get be() {
+    return this.we;
+  }
+  De(e) {
+    e.approximateByteSize() > 0 && (this.we = true, this.pe = e);
+  }
+  ve() {
+    let e = __PRIVATE_documentKeySet(), t = __PRIVATE_documentKeySet(), n = __PRIVATE_documentKeySet();
+    return this.ge.forEach((r, i) => {
+      switch (i) {
+        case 0:
+          e = e.add(r);
+          break;
+        case 2:
+          t = t.add(r);
+          break;
+        case 1:
+          n = n.add(r);
+          break;
+        default:
+          fail();
+      }
+    }), new TargetChange(this.pe, this.ye, e, t, n);
+  }
+  Ce() {
+    this.we = false, this.ge = __PRIVATE_snapshotChangesMap();
+  }
+  Fe(e, t) {
+    this.we = true, this.ge = this.ge.insert(e, t);
+  }
+  Me(e) {
+    this.we = true, this.ge = this.ge.remove(e);
+  }
+  xe() {
+    this.fe += 1;
+  }
+  Oe() {
+    this.fe -= 1, __PRIVATE_hardAssert(this.fe >= 0);
+  }
+  Ne() {
+    this.we = true, this.ye = true;
+  }
+}
+
+class __PRIVATE_WatchChangeAggregator {
+  constructor(e) {
+    this.Be = e, this.Le = new Map, this.ke = __PRIVATE_mutableDocumentMap(), this.qe = __PRIVATE_documentTargetMap(), this.Qe = __PRIVATE_documentTargetMap(), this.Ke = new SortedMap(__PRIVATE_primitiveComparator);
+  }
+  $e(e) {
+    for (const t of e.Re)
+      e.Ve && e.Ve.isFoundDocument() ? this.Ue(t, e.Ve) : this.We(t, e.key, e.Ve);
+    for (const t of e.removedTargetIds)
+      this.We(t, e.key, e.Ve);
+  }
+  Ge(e) {
+    this.forEachTarget(e, (t) => {
+      const n = this.ze(t);
+      switch (e.state) {
+        case 0:
+          this.je(t) && n.De(e.resumeToken);
+          break;
+        case 1:
+          n.Oe(), n.Se || n.Ce(), n.De(e.resumeToken);
+          break;
+        case 2:
+          n.Oe(), n.Se || this.removeTarget(t);
+          break;
+        case 3:
+          this.je(t) && (n.Ne(), n.De(e.resumeToken));
+          break;
+        case 4:
+          this.je(t) && (this.He(t), n.De(e.resumeToken));
+          break;
+        default:
+          fail();
+      }
+    });
+  }
+  forEachTarget(e, t) {
+    e.targetIds.length > 0 ? e.targetIds.forEach(t) : this.Le.forEach((e2, n) => {
+      this.je(n) && t(n);
+    });
+  }
+  Je(e) {
+    const t = e.targetId, n = e.me.count, r = this.Ye(t);
+    if (r) {
+      const i = r.target;
+      if (__PRIVATE_targetIsDocumentTarget(i))
+        if (n === 0) {
+          const e2 = new DocumentKey(i.path);
+          this.We(t, e2, MutableDocument.newNoDocument(e2, SnapshotVersion.min()));
+        } else
+          __PRIVATE_hardAssert(n === 1);
+      else {
+        const r2 = this.Ze(t);
+        if (r2 !== n) {
+          const n2 = this.Xe(e), i2 = n2 ? this.et(n2, e, r2) : 1;
+          if (i2 !== 0) {
+            this.He(t);
+            const e2 = i2 === 2 ? "TargetPurposeExistenceFilterMismatchBloom" : "TargetPurposeExistenceFilterMismatch";
+            this.Ke = this.Ke.insert(t, e2);
+          }
+          Pe == null || Pe.tt(function __PRIVATE_createExistenceFilterMismatchInfoForTestingHooks(e2, t2, n3, r3, i3) {
+            var s, o, _, a, u, c;
+            const l = {
+              localCacheCount: e2,
+              existenceFilterCount: t2.count,
+              databaseId: n3.database,
+              projectId: n3.projectId
+            }, h = t2.unchangedNames;
+            h && (l.bloomFilter = {
+              applied: i3 === 0,
+              hashCount: (s = h == null ? undefined : h.hashCount) !== null && s !== undefined ? s : 0,
+              bitmapLength: (a = (_ = (o = h == null ? undefined : h.bits) === null || o === undefined ? undefined : o.bitmap) === null || _ === undefined ? undefined : _.length) !== null && a !== undefined ? a : 0,
+              padding: (c = (u = h == null ? undefined : h.bits) === null || u === undefined ? undefined : u.padding) !== null && c !== undefined ? c : 0,
+              mightContain: (e3) => {
+                var t3;
+                return (t3 = r3 == null ? undefined : r3.mightContain(e3)) !== null && t3 !== undefined && t3;
+              }
+            });
+            return l;
+          }(r2, e.me, this.Be.nt(), n2, i2));
+        }
+      }
+    }
+  }
+  Xe(e) {
+    const t = e.me.unchangedNames;
+    if (!t || !t.bits)
+      return null;
+    const { bits: { bitmap: n = "", padding: r = 0 }, hashCount: i = 0 } = t;
+    let s, o;
+    try {
+      s = __PRIVATE_normalizeByteString(n).toUint8Array();
+    } catch (e2) {
+      if (e2 instanceof __PRIVATE_Base64DecodeError)
+        return __PRIVATE_logWarn("Decoding the base64 bloom filter in existence filter failed (" + e2.message + "); ignoring the bloom filter and falling back to full re-query."), null;
+      throw e2;
+    }
+    try {
+      o = new BloomFilter(s, r, i);
+    } catch (e2) {
+      return __PRIVATE_logWarn(e2 instanceof __PRIVATE_BloomFilterError ? "BloomFilter error: " : "Applying bloom filter failed: ", e2), null;
+    }
+    return o.Te === 0 ? null : o;
+  }
+  et(e, t, n) {
+    return t.me.count === n - this.rt(e, t.targetId) ? 0 : 2;
+  }
+  rt(e, t) {
+    const n = this.Be.getRemoteKeysForTarget(t);
+    let r = 0;
+    return n.forEach((n2) => {
+      const i = this.Be.nt(), s = `projects/${i.projectId}/databases/${i.database}/documents/${n2.path.canonicalString()}`;
+      e.mightContain(s) || (this.We(t, n2, null), r++);
+    }), r;
+  }
+  it(e) {
+    const t = new Map;
+    this.Le.forEach((n2, r2) => {
+      const i = this.Ye(r2);
+      if (i) {
+        if (n2.current && __PRIVATE_targetIsDocumentTarget(i.target)) {
+          const t2 = new DocumentKey(i.target.path);
+          this.st(t2).has(r2) || this.ot(r2, t2) || this.We(r2, t2, MutableDocument.newNoDocument(t2, e));
+        }
+        n2.be && (t.set(r2, n2.ve()), n2.Ce());
+      }
+    });
+    let n = __PRIVATE_documentKeySet();
+    this.Qe.forEach((e2, t2) => {
+      let r2 = true;
+      t2.forEachWhile((e3) => {
+        const t3 = this.Ye(e3);
+        return !t3 || t3.purpose === "TargetPurposeLimboResolution" || (r2 = false, false);
+      }), r2 && (n = n.add(e2));
+    }), this.ke.forEach((t2, n2) => n2.setReadTime(e));
+    const r = new RemoteEvent(e, t, this.Ke, this.ke, n);
+    return this.ke = __PRIVATE_mutableDocumentMap(), this.qe = __PRIVATE_documentTargetMap(), this.Qe = __PRIVATE_documentTargetMap(), this.Ke = new SortedMap(__PRIVATE_primitiveComparator), r;
+  }
+  Ue(e, t) {
+    if (!this.je(e))
+      return;
+    const n = this.ot(e, t.key) ? 2 : 0;
+    this.ze(e).Fe(t.key, n), this.ke = this.ke.insert(t.key, t), this.qe = this.qe.insert(t.key, this.st(t.key).add(e)), this.Qe = this.Qe.insert(t.key, this._t(t.key).add(e));
+  }
+  We(e, t, n) {
+    if (!this.je(e))
+      return;
+    const r = this.ze(e);
+    this.ot(e, t) ? r.Fe(t, 1) : r.Me(t), this.Qe = this.Qe.insert(t, this._t(t).delete(e)), this.Qe = this.Qe.insert(t, this._t(t).add(e)), n && (this.ke = this.ke.insert(t, n));
+  }
+  removeTarget(e) {
+    this.Le.delete(e);
+  }
+  Ze(e) {
+    const t = this.ze(e).ve();
+    return this.Be.getRemoteKeysForTarget(e).size + t.addedDocuments.size - t.removedDocuments.size;
+  }
+  xe(e) {
+    this.ze(e).xe();
+  }
+  ze(e) {
+    let t = this.Le.get(e);
+    return t || (t = new __PRIVATE_TargetState, this.Le.set(e, t)), t;
+  }
+  _t(e) {
+    let t = this.Qe.get(e);
+    return t || (t = new SortedSet(__PRIVATE_primitiveComparator), this.Qe = this.Qe.insert(e, t)), t;
+  }
+  st(e) {
+    let t = this.qe.get(e);
+    return t || (t = new SortedSet(__PRIVATE_primitiveComparator), this.qe = this.qe.insert(e, t)), t;
+  }
+  je(e) {
+    const t = this.Ye(e) !== null;
+    return t || __PRIVATE_logDebug("WatchChangeAggregator", "Detected inactive target", e), t;
+  }
+  Ye(e) {
+    const t = this.Le.get(e);
+    return t && t.Se ? null : this.Be.ut(e);
+  }
+  He(e) {
+    this.Le.set(e, new __PRIVATE_TargetState);
+    this.Be.getRemoteKeysForTarget(e).forEach((t) => {
+      this.We(e, t, null);
+    });
+  }
+  ot(e, t) {
+    return this.Be.getRemoteKeysForTarget(e).has(t);
+  }
+}
+function __PRIVATE_documentTargetMap() {
+  return new SortedMap(DocumentKey.comparator);
+}
+function __PRIVATE_snapshotChangesMap() {
+  return new SortedMap(DocumentKey.comparator);
+}
 var Ie = (() => {
   const e = {
     asc: "ASCENDING",
@@ -30750,6 +31132,11 @@ class JsonProtoSerializer {
   constructor(e, t) {
     this.databaseId = e, this.useProto3Json = t;
   }
+}
+function __PRIVATE_toInt32Proto(e, t) {
+  return e.useProto3Json || __PRIVATE_isNullOrUndefined(t) ? t : {
+    value: t
+  };
 }
 function toTimestamp(e, t) {
   if (e.useProto3Json) {
@@ -30788,6 +31175,17 @@ function __PRIVATE_fromResourceName(e) {
 function __PRIVATE_toName(e, t) {
   return __PRIVATE_toResourceName(e.databaseId, t.path);
 }
+function fromName(e, t) {
+  const n = __PRIVATE_fromResourceName(t);
+  if (n.get(1) !== e.databaseId.projectId)
+    throw new FirestoreError(D.INVALID_ARGUMENT, "Tried to deserialize key from different project: " + n.get(1) + " vs " + e.databaseId.projectId);
+  if (n.get(3) !== e.databaseId.database)
+    throw new FirestoreError(D.INVALID_ARGUMENT, "Tried to deserialize key from different database: " + n.get(3) + " vs " + e.databaseId.database);
+  return new DocumentKey(__PRIVATE_extractLocalPathFromResourceName(n));
+}
+function __PRIVATE_toQueryPath(e, t) {
+  return __PRIVATE_toResourceName(e.databaseId, t);
+}
 function __PRIVATE_fromQueryPath(e) {
   const t = __PRIVATE_fromResourceName(e);
   return t.length === 4 ? ResourcePath.emptyPath() : __PRIVATE_extractLocalPathFromResourceName(t);
@@ -30803,6 +31201,54 @@ function __PRIVATE_toMutationDocument(e, t, n) {
     name: __PRIVATE_toName(e, t),
     fields: n.value.mapValue.fields
   };
+}
+function __PRIVATE_fromWatchChange(e, t) {
+  let n;
+  if ("targetChange" in t) {
+    t.targetChange;
+    const r = function __PRIVATE_fromWatchTargetChangeState(e2) {
+      return e2 === "NO_CHANGE" ? 0 : e2 === "ADD" ? 1 : e2 === "REMOVE" ? 2 : e2 === "CURRENT" ? 3 : e2 === "RESET" ? 4 : fail();
+    }(t.targetChange.targetChangeType || "NO_CHANGE"), i = t.targetChange.targetIds || [], s = function __PRIVATE_fromBytes(e2, t2) {
+      return e2.useProto3Json ? (__PRIVATE_hardAssert(t2 === undefined || typeof t2 == "string"), ByteString.fromBase64String(t2 || "")) : (__PRIVATE_hardAssert(t2 === undefined || t2 instanceof Buffer || t2 instanceof Uint8Array), ByteString.fromUint8Array(t2 || new Uint8Array));
+    }(e, t.targetChange.resumeToken), o = t.targetChange.cause, _ = o && function __PRIVATE_fromRpcStatus(e2) {
+      const t2 = e2.code === undefined ? D.UNKNOWN : __PRIVATE_mapCodeFromRpcCode(e2.code);
+      return new FirestoreError(t2, e2.message || "");
+    }(o);
+    n = new __PRIVATE_WatchTargetChange(r, i, s, _ || null);
+  } else if ("documentChange" in t) {
+    t.documentChange;
+    const r = t.documentChange;
+    r.document, r.document.name, r.document.updateTime;
+    const i = fromName(e, r.document.name), s = __PRIVATE_fromVersion(r.document.updateTime), o = r.document.createTime ? __PRIVATE_fromVersion(r.document.createTime) : SnapshotVersion.min(), _ = new ObjectValue({
+      mapValue: {
+        fields: r.document.fields
+      }
+    }), a = MutableDocument.newFoundDocument(i, s, o, _), u = r.targetIds || [], c = r.removedTargetIds || [];
+    n = new __PRIVATE_DocumentWatchChange(u, c, a.key, a);
+  } else if ("documentDelete" in t) {
+    t.documentDelete;
+    const r = t.documentDelete;
+    r.document;
+    const i = fromName(e, r.document), s = r.readTime ? __PRIVATE_fromVersion(r.readTime) : SnapshotVersion.min(), o = MutableDocument.newNoDocument(i, s), _ = r.removedTargetIds || [];
+    n = new __PRIVATE_DocumentWatchChange([], _, o.key, o);
+  } else if ("documentRemove" in t) {
+    t.documentRemove;
+    const r = t.documentRemove;
+    r.document;
+    const i = fromName(e, r.document), s = r.removedTargetIds || [];
+    n = new __PRIVATE_DocumentWatchChange([], s, i, null);
+  } else {
+    if (!("filter" in t))
+      return fail();
+    {
+      t.filter;
+      const e2 = t.filter;
+      e2.targetId;
+      const { count: r = 0, unchangedNames: i } = e2, s = new ExistenceFilter(r, i), o = e2.targetId;
+      n = new __PRIVATE_ExistenceFilterChange(o, s);
+    }
+  }
+  return n;
 }
 function toMutation(e, t) {
   let n;
@@ -30867,6 +31313,55 @@ function __PRIVATE_fromWriteResults(e, t) {
     return n.isEqual(SnapshotVersion.min()) && (n = __PRIVATE_fromVersion(t2)), new MutationResult(n, e3.transformResults || []);
   }(e2, t))) : [];
 }
+function __PRIVATE_toDocumentsTarget(e, t) {
+  return {
+    documents: [__PRIVATE_toQueryPath(e, t.path)]
+  };
+}
+function __PRIVATE_toQueryTarget(e, t) {
+  const n = {
+    structuredQuery: {}
+  }, r = t.path;
+  let i;
+  t.collectionGroup !== null ? (i = r, n.structuredQuery.from = [{
+    collectionId: t.collectionGroup,
+    allDescendants: true
+  }]) : (i = r.popLast(), n.structuredQuery.from = [{
+    collectionId: r.lastSegment()
+  }]), n.parent = __PRIVATE_toQueryPath(e, i);
+  const s = function __PRIVATE_toFilters(e2) {
+    if (e2.length === 0)
+      return;
+    return __PRIVATE_toFilter(CompositeFilter.create(e2, "and"));
+  }(t.filters);
+  s && (n.structuredQuery.where = s);
+  const o = function __PRIVATE_toOrder(e2) {
+    if (e2.length === 0)
+      return;
+    return e2.map((e3) => function __PRIVATE_toPropertyOrder(e4) {
+      return {
+        field: __PRIVATE_toFieldPathReference(e4.field),
+        direction: __PRIVATE_toDirection(e4.dir)
+      };
+    }(e3));
+  }(t.orderBy);
+  o && (n.structuredQuery.orderBy = o);
+  const _ = __PRIVATE_toInt32Proto(e, t.limit);
+  return _ !== null && (n.structuredQuery.limit = _), t.startAt && (n.structuredQuery.startAt = function __PRIVATE_toStartAtCursor(e2) {
+    return {
+      before: e2.inclusive,
+      values: e2.position
+    };
+  }(t.startAt)), t.endAt && (n.structuredQuery.endAt = function __PRIVATE_toEndAtCursor(e2) {
+    return {
+      before: !e2.inclusive,
+      values: e2.position
+    };
+  }(t.endAt)), {
+    ct: n,
+    parent: i
+  };
+}
 function __PRIVATE_convertQueryTargetToQuery(e) {
   let t = __PRIVATE_fromQueryPath(e.parent);
   const n = e.structuredQuery, r = n.from ? n.from.length : 0;
@@ -30913,6 +31408,25 @@ function __PRIVATE_convertQueryTargetToQuery(e) {
     const t2 = !e2.before, n2 = e2.values || [];
     return new Bound(n2, t2);
   }(n.endAt)), __PRIVATE_newQuery(t, i, o, s, _, "F", a, u);
+}
+function __PRIVATE_toListenRequestLabels(e, t) {
+  const n = function __PRIVATE_toLabel(e2) {
+    switch (e2) {
+      case "TargetPurposeListen":
+        return null;
+      case "TargetPurposeExistenceFilterMismatch":
+        return "existence-filter-mismatch";
+      case "TargetPurposeExistenceFilterMismatchBloom":
+        return "existence-filter-mismatch-bloom";
+      case "TargetPurposeLimboResolution":
+        return "limbo-document";
+      default:
+        return fail();
+    }
+  }(t.purpose);
+  return n == null ? null : {
+    "goog-listen-tags": n
+  };
 }
 function __PRIVATE_fromFilter(e) {
   return e.unaryFilter !== undefined ? function __PRIVATE_fromUnaryFilter(e2) {
@@ -30980,8 +31494,74 @@ function __PRIVATE_fromFilter(e) {
     }(e2.compositeFilter.op));
   }(e) : fail();
 }
+function __PRIVATE_toDirection(e) {
+  return Ie[e];
+}
+function __PRIVATE_toOperatorName(e) {
+  return de[e];
+}
+function __PRIVATE_toCompositeOperatorName(e) {
+  return Ee[e];
+}
+function __PRIVATE_toFieldPathReference(e) {
+  return {
+    fieldPath: e.canonicalString()
+  };
+}
 function __PRIVATE_fromFieldPathReference(e) {
   return FieldPath$1.fromServerFormat(e.fieldPath);
+}
+function __PRIVATE_toFilter(e) {
+  return e instanceof FieldFilter ? function __PRIVATE_toUnaryOrFieldFilter(e2) {
+    if (e2.op === "==") {
+      if (__PRIVATE_isNanValue(e2.value))
+        return {
+          unaryFilter: {
+            field: __PRIVATE_toFieldPathReference(e2.field),
+            op: "IS_NAN"
+          }
+        };
+      if (__PRIVATE_isNullValue(e2.value))
+        return {
+          unaryFilter: {
+            field: __PRIVATE_toFieldPathReference(e2.field),
+            op: "IS_NULL"
+          }
+        };
+    } else if (e2.op === "!=") {
+      if (__PRIVATE_isNanValue(e2.value))
+        return {
+          unaryFilter: {
+            field: __PRIVATE_toFieldPathReference(e2.field),
+            op: "IS_NOT_NAN"
+          }
+        };
+      if (__PRIVATE_isNullValue(e2.value))
+        return {
+          unaryFilter: {
+            field: __PRIVATE_toFieldPathReference(e2.field),
+            op: "IS_NOT_NULL"
+          }
+        };
+    }
+    return {
+      fieldFilter: {
+        field: __PRIVATE_toFieldPathReference(e2.field),
+        op: __PRIVATE_toOperatorName(e2.op),
+        value: e2.value
+      }
+    };
+  }(e) : e instanceof CompositeFilter ? function __PRIVATE_toCompositeFilter(e2) {
+    const t = e2.getFilters().map((e3) => __PRIVATE_toFilter(e3));
+    if (t.length === 1)
+      return t[0];
+    return {
+      compositeFilter: {
+        op: __PRIVATE_toCompositeOperatorName(e2.op),
+        filters: t
+      }
+    };
+  }(e) : fail();
 }
 function __PRIVATE_toDocumentMask(e) {
   const t = [];
@@ -30992,6 +31572,25 @@ function __PRIVATE_toDocumentMask(e) {
 function __PRIVATE_isValidResourceName(e) {
   return e.length >= 4 && e.get(0) === "projects" && e.get(2) === "databases";
 }
+
+class TargetData {
+  constructor(e, t, n, r, i = SnapshotVersion.min(), s = SnapshotVersion.min(), o = ByteString.EMPTY_BYTE_STRING, _ = null) {
+    this.target = e, this.targetId = t, this.purpose = n, this.sequenceNumber = r, this.snapshotVersion = i, this.lastLimboFreeSnapshotVersion = s, this.resumeToken = o, this.expectedCount = _;
+  }
+  withSequenceNumber(e) {
+    return new TargetData(this.target, this.targetId, this.purpose, e, this.snapshotVersion, this.lastLimboFreeSnapshotVersion, this.resumeToken, this.expectedCount);
+  }
+  withResumeToken(e, t) {
+    return new TargetData(this.target, this.targetId, this.purpose, this.sequenceNumber, t, this.lastLimboFreeSnapshotVersion, e, null);
+  }
+  withExpectedCount(e) {
+    return new TargetData(this.target, this.targetId, this.purpose, this.sequenceNumber, this.snapshotVersion, this.lastLimboFreeSnapshotVersion, this.resumeToken, e);
+  }
+  withLastLimboFreeSnapshotVersion(e) {
+    return new TargetData(this.target, this.targetId, this.purpose, this.sequenceNumber, this.snapshotVersion, e, this.resumeToken, this.expectedCount);
+  }
+}
+
 class __PRIVATE_LocalSerializer {
   constructor(e) {
     this.ht = e;
@@ -32184,9 +32783,100 @@ function __PRIVATE_localStoreGetLastRemoteSnapshotVersion(e) {
   const t = __PRIVATE_debugCast(e);
   return t.persistence.runTransaction("Get last remote snapshot version", "readonly", (e2) => t.Gr.getLastRemoteSnapshotVersion(e2));
 }
+function __PRIVATE_localStoreApplyRemoteEventToLocalCache(e, t) {
+  const n = __PRIVATE_debugCast(e), r = t.snapshotVersion;
+  let i = n.us;
+  return n.persistence.runTransaction("Apply remote event", "readwrite-primary", (e2) => {
+    const s = n.hs.newChangeBuffer({
+      trackRemovals: true
+    });
+    i = n.us;
+    const o = [];
+    t.targetChanges.forEach((s2, _2) => {
+      const a2 = i.get(_2);
+      if (!a2)
+        return;
+      o.push(n.Gr.removeMatchingKeys(e2, s2.removedDocuments, _2).next(() => n.Gr.addMatchingKeys(e2, s2.addedDocuments, _2)));
+      let u = a2.withSequenceNumber(e2.currentSequenceNumber);
+      t.targetMismatches.get(_2) !== null ? u = u.withResumeToken(ByteString.EMPTY_BYTE_STRING, SnapshotVersion.min()).withLastLimboFreeSnapshotVersion(SnapshotVersion.min()) : s2.resumeToken.approximateByteSize() > 0 && (u = u.withResumeToken(s2.resumeToken, r)), i = i.insert(_2, u), function __PRIVATE_shouldPersistTargetData(e3, t2, n2) {
+        if (e3.resumeToken.approximateByteSize() === 0)
+          return true;
+        if (t2.snapshotVersion.toMicroseconds() - e3.snapshotVersion.toMicroseconds() >= 300000000)
+          return true;
+        return n2.addedDocuments.size + n2.modifiedDocuments.size + n2.removedDocuments.size > 0;
+      }(a2, u, s2) && o.push(n.Gr.updateTargetData(e2, u));
+    });
+    let _ = __PRIVATE_mutableDocumentMap(), a = __PRIVATE_documentKeySet();
+    if (t.documentUpdates.forEach((r2) => {
+      t.resolvedLimboDocuments.has(r2) && o.push(n.persistence.referenceDelegate.updateLimboDocument(e2, r2));
+    }), o.push(__PRIVATE_populateDocumentChangeBuffer(e2, s, t.documentUpdates).next((e3) => {
+      _ = e3.Is, a = e3.ds;
+    })), !r.isEqual(SnapshotVersion.min())) {
+      const t2 = n.Gr.getLastRemoteSnapshotVersion(e2).next((t3) => n.Gr.setTargetsMetadata(e2, e2.currentSequenceNumber, r));
+      o.push(t2);
+    }
+    return PersistencePromise.waitFor(o).next(() => s.apply(e2)).next(() => n.localDocuments.getLocalViewOfDocuments(e2, _, a)).next(() => _);
+  }).then((e2) => (n.us = i, e2));
+}
+function __PRIVATE_populateDocumentChangeBuffer(e, t, n) {
+  let r = __PRIVATE_documentKeySet(), i = __PRIVATE_documentKeySet();
+  return n.forEach((e2) => r = r.add(e2)), t.getEntries(e, r).next((e2) => {
+    let r2 = __PRIVATE_mutableDocumentMap();
+    return n.forEach((n2, s) => {
+      const o = e2.get(n2);
+      s.isFoundDocument() !== o.isFoundDocument() && (i = i.add(n2)), s.isNoDocument() && s.version.isEqual(SnapshotVersion.min()) ? (t.removeEntry(n2, s.readTime), r2 = r2.insert(n2, s)) : !o.isValidDocument() || s.version.compareTo(o.version) > 0 || s.version.compareTo(o.version) === 0 && o.hasPendingWrites ? (t.addEntry(s), r2 = r2.insert(n2, s)) : __PRIVATE_logDebug("LocalStore", "Ignoring outdated watch update for ", n2, ". Current version:", o.version, " Watch version:", s.version);
+    }), {
+      Is: r2,
+      ds: i
+    };
+  });
+}
 function __PRIVATE_localStoreGetNextMutationBatch(e, t) {
   const n = __PRIVATE_debugCast(e);
   return n.persistence.runTransaction("Get next mutation batch", "readonly", (e2) => (t === undefined && (t = -1), n.mutationQueue.getNextMutationBatchAfterBatchId(e2, t)));
+}
+function __PRIVATE_localStoreAllocateTarget(e, t) {
+  const n = __PRIVATE_debugCast(e);
+  return n.persistence.runTransaction("Allocate target", "readwrite", (e2) => {
+    let r;
+    return n.Gr.getTargetData(e2, t).next((i) => i ? (r = i, PersistencePromise.resolve(r)) : n.Gr.allocateTargetId(e2).next((i2) => (r = new TargetData(t, i2, "TargetPurposeListen", e2.currentSequenceNumber), n.Gr.addTargetData(e2, r).next(() => r))));
+  }).then((e2) => {
+    const r = n.us.get(e2.targetId);
+    return (r === null || e2.snapshotVersion.compareTo(r.snapshotVersion) > 0) && (n.us = n.us.insert(e2.targetId, e2), n.cs.set(t, e2.targetId)), e2;
+  });
+}
+async function __PRIVATE_localStoreReleaseTarget(e, t, n) {
+  const r = __PRIVATE_debugCast(e), i = r.us.get(t), s = n ? "readwrite" : "readwrite-primary";
+  try {
+    n || await r.persistence.runTransaction("Release target", s, (e2) => r.persistence.referenceDelegate.removeTarget(e2, i));
+  } catch (e2) {
+    if (!__PRIVATE_isIndexedDbTransactionError(e2))
+      throw e2;
+    __PRIVATE_logDebug("LocalStore", `Failed to update sequence numbers for target ${t}: ${e2}`);
+  }
+  r.us = r.us.remove(t), r.cs.delete(i.target);
+}
+function __PRIVATE_localStoreExecuteQuery(e, t, n) {
+  const r = __PRIVATE_debugCast(e);
+  let i = SnapshotVersion.min(), s = __PRIVATE_documentKeySet();
+  return r.persistence.runTransaction("Execute query", "readwrite", (e2) => function __PRIVATE_localStoreGetTargetData(e3, t2, n2) {
+    const r2 = __PRIVATE_debugCast(e3), i2 = r2.cs.get(n2);
+    return i2 !== undefined ? PersistencePromise.resolve(r2.us.get(i2)) : r2.Gr.getTargetData(t2, n2);
+  }(r, e2, __PRIVATE_queryToTarget(t)).next((t2) => {
+    if (t2)
+      return i = t2.lastLimboFreeSnapshotVersion, r.Gr.getMatchingKeysForTargetId(e2, t2.targetId).next((e3) => {
+        s = e3;
+      });
+  }).next(() => r._s.getDocumentsMatchingQuery(e2, t, n ? i : SnapshotVersion.min(), n ? s : __PRIVATE_documentKeySet())).next((e3) => (__PRIVATE_setMaxReadTime(r, __PRIVATE_queryCollectionGroup(t), e3), {
+    documents: e3,
+    Es: s
+  })));
+}
+function __PRIVATE_setMaxReadTime(e, t, n) {
+  let r = e.ls.get(t) || SnapshotVersion.min();
+  n.forEach((e2, t2) => {
+    t2.readTime.compareTo(r) > 0 && (r = t2.readTime);
+  }), e.ls.set(t, r);
 }
 class __PRIVATE_LocalClientState {
   constructor() {
@@ -32592,6 +33282,56 @@ class __PRIVATE_PersistentStream {
     };
   }
 }
+
+class __PRIVATE_PersistentListenStream extends __PRIVATE_PersistentStream {
+  constructor(e, t, n, r, i, s) {
+    super(e, "listen_stream_connection_backoff", "listen_stream_idle", "health_check_timeout", t, n, r, s), this.serializer = i;
+  }
+  E_(e, t) {
+    return this.connection.qo("Listen", e, t);
+  }
+  A_(e) {
+    return this.onNext(e);
+  }
+  onNext(e) {
+    this.r_.reset();
+    const t = __PRIVATE_fromWatchChange(this.serializer, e), n = function __PRIVATE_versionFromListenResponse(e2) {
+      if (!("targetChange" in e2))
+        return SnapshotVersion.min();
+      const t2 = e2.targetChange;
+      return t2.targetIds && t2.targetIds.length ? SnapshotVersion.min() : t2.readTime ? __PRIVATE_fromVersion(t2.readTime) : SnapshotVersion.min();
+    }(e);
+    return this.listener.R_(t, n);
+  }
+  V_(e) {
+    const t = {};
+    t.database = __PRIVATE_getEncodedDatabaseId(this.serializer), t.addTarget = function __PRIVATE_toTarget(e2, t2) {
+      let n2;
+      const r = t2.target;
+      if (n2 = __PRIVATE_targetIsDocumentTarget(r) ? {
+        documents: __PRIVATE_toDocumentsTarget(e2, r)
+      } : {
+        query: __PRIVATE_toQueryTarget(e2, r).ct
+      }, n2.targetId = t2.targetId, t2.resumeToken.approximateByteSize() > 0) {
+        n2.resumeToken = __PRIVATE_toBytes(e2, t2.resumeToken);
+        const r2 = __PRIVATE_toInt32Proto(e2, t2.expectedCount);
+        r2 !== null && (n2.expectedCount = r2);
+      } else if (t2.snapshotVersion.compareTo(SnapshotVersion.min()) > 0) {
+        n2.readTime = toTimestamp(e2, t2.snapshotVersion.toTimestamp());
+        const r2 = __PRIVATE_toInt32Proto(e2, t2.expectedCount);
+        r2 !== null && (n2.expectedCount = r2);
+      }
+      return n2;
+    }(this.serializer, e);
+    const n = __PRIVATE_toListenRequestLabels(this.serializer, e);
+    n && (t.labels = n), this.c_(t);
+  }
+  m_(e) {
+    const t = {};
+    t.database = __PRIVATE_getEncodedDatabaseId(this.serializer), t.removeTarget = e, this.c_(t);
+  }
+}
+
 class __PRIVATE_PersistentWriteStream extends __PRIVATE_PersistentStream {
   constructor(e, t, n, r, i, s) {
     super(e, "write_stream_connection_backoff", "write_stream_idle", "health_check_timeout", t, n, r, s), this.serializer = i;
@@ -32700,8 +33440,84 @@ async function __PRIVATE_disableNetworkInternal(e) {
   for (const t of e.q_)
     await t(false);
 }
+function __PRIVATE_remoteStoreListen(e, t) {
+  const n = __PRIVATE_debugCast(e);
+  n.L_.has(t.targetId) || (n.L_.set(t.targetId, t), __PRIVATE_shouldStartWatchStream(n) ? __PRIVATE_startWatchStream(n) : __PRIVATE_ensureWatchStream(n).s_() && __PRIVATE_sendWatchRequest(n, t));
+}
+function __PRIVATE_remoteStoreUnlisten(e, t) {
+  const n = __PRIVATE_debugCast(e), r = __PRIVATE_ensureWatchStream(n);
+  n.L_.delete(t), r.s_() && __PRIVATE_sendUnwatchRequest(n, t), n.L_.size === 0 && (r.s_() ? r.a_() : __PRIVATE_canUseNetwork(n) && n.K_.set("Unknown"));
+}
+function __PRIVATE_sendWatchRequest(e, t) {
+  if (e.U_.xe(t.targetId), t.resumeToken.approximateByteSize() > 0 || t.snapshotVersion.compareTo(SnapshotVersion.min()) > 0) {
+    const n = e.remoteSyncer.getRemoteKeysForTarget(t.targetId).size;
+    t = t.withExpectedCount(n);
+  }
+  __PRIVATE_ensureWatchStream(e).V_(t);
+}
+function __PRIVATE_sendUnwatchRequest(e, t) {
+  e.U_.xe(t), __PRIVATE_ensureWatchStream(e).m_(t);
+}
+function __PRIVATE_startWatchStream(e) {
+  e.U_ = new __PRIVATE_WatchChangeAggregator({
+    getRemoteKeysForTarget: (t) => e.remoteSyncer.getRemoteKeysForTarget(t),
+    ut: (t) => e.L_.get(t) || null,
+    nt: () => e.datastore.serializer.databaseId
+  }), __PRIVATE_ensureWatchStream(e).start(), e.K_.F_();
+}
+function __PRIVATE_shouldStartWatchStream(e) {
+  return __PRIVATE_canUseNetwork(e) && !__PRIVATE_ensureWatchStream(e).i_() && e.L_.size > 0;
+}
 function __PRIVATE_canUseNetwork(e) {
   return __PRIVATE_debugCast(e).k_.size === 0;
+}
+function __PRIVATE_cleanUpWatchStreamState(e) {
+  e.U_ = undefined;
+}
+async function __PRIVATE_onWatchStreamConnected(e) {
+  e.K_.set("Online");
+}
+async function __PRIVATE_onWatchStreamOpen(e) {
+  e.L_.forEach((t, n) => {
+    __PRIVATE_sendWatchRequest(e, t);
+  });
+}
+async function __PRIVATE_onWatchStreamClose(e, t) {
+  __PRIVATE_cleanUpWatchStreamState(e), __PRIVATE_shouldStartWatchStream(e) ? (e.K_.O_(t), __PRIVATE_startWatchStream(e)) : e.K_.set("Unknown");
+}
+async function __PRIVATE_onWatchStreamChange(e, t, n) {
+  if (e.K_.set("Online"), t instanceof __PRIVATE_WatchTargetChange && t.state === 2 && t.cause)
+    try {
+      await async function __PRIVATE_handleTargetError(e2, t2) {
+        const n2 = t2.cause;
+        for (const r of t2.targetIds)
+          e2.L_.has(r) && (await e2.remoteSyncer.rejectListen(r, n2), e2.L_.delete(r), e2.U_.removeTarget(r));
+      }(e, t);
+    } catch (n2) {
+      __PRIVATE_logDebug("RemoteStore", "Failed to remove targets %s: %s ", t.targetIds.join(","), n2), await __PRIVATE_disableNetworkUntilRecovery(e, n2);
+    }
+  else if (t instanceof __PRIVATE_DocumentWatchChange ? e.U_.$e(t) : t instanceof __PRIVATE_ExistenceFilterChange ? e.U_.Je(t) : e.U_.Ge(t), !n.isEqual(SnapshotVersion.min()))
+    try {
+      const t2 = await __PRIVATE_localStoreGetLastRemoteSnapshotVersion(e.localStore);
+      n.compareTo(t2) >= 0 && await function __PRIVATE_raiseWatchSnapshot(e2, t3) {
+        const n2 = e2.U_.it(t3);
+        return n2.targetChanges.forEach((n3, r) => {
+          if (n3.resumeToken.approximateByteSize() > 0) {
+            const i = e2.L_.get(r);
+            i && e2.L_.set(r, i.withResumeToken(n3.resumeToken, t3));
+          }
+        }), n2.targetMismatches.forEach((t4, n3) => {
+          const r = e2.L_.get(t4);
+          if (!r)
+            return;
+          e2.L_.set(t4, r.withResumeToken(ByteString.EMPTY_BYTE_STRING, r.snapshotVersion)), __PRIVATE_sendUnwatchRequest(e2, t4);
+          const i = new TargetData(r.target, t4, n3, r.sequenceNumber);
+          __PRIVATE_sendWatchRequest(e2, i);
+        }), e2.remoteSyncer.applyRemoteEvent(n2);
+      }(e, n);
+    } catch (t2) {
+      __PRIVATE_logDebug("RemoteStore", "Failed to raise snapshot:", t2), await __PRIVATE_disableNetworkUntilRecovery(e, t2);
+    }
 }
 async function __PRIVATE_disableNetworkUntilRecovery(e, t, n) {
   if (!__PRIVATE_isIndexedDbTransactionError(t))
@@ -32775,6 +33591,19 @@ async function __PRIVATE_remoteStoreApplyPrimaryState(e, t) {
   const n = __PRIVATE_debugCast(e);
   t ? (n.k_.delete(2), await __PRIVATE_enableNetworkInternal(n)) : t || (n.k_.add(2), await __PRIVATE_disableNetworkInternal(n), n.K_.set("Unknown"));
 }
+function __PRIVATE_ensureWatchStream(e) {
+  return e.W_ || (e.W_ = function __PRIVATE_newPersistentWatchStream(e2, t, n) {
+    const r = __PRIVATE_debugCast(e2);
+    return r.b_(), new __PRIVATE_PersistentListenStream(t, r.connection, r.authCredentials, r.appCheckCredentials, r.serializer, n);
+  }(e.datastore, e.asyncQueue, {
+    Ro: __PRIVATE_onWatchStreamConnected.bind(null, e),
+    mo: __PRIVATE_onWatchStreamOpen.bind(null, e),
+    po: __PRIVATE_onWatchStreamClose.bind(null, e),
+    R_: __PRIVATE_onWatchStreamChange.bind(null, e)
+  }), e.q_.push(async (t) => {
+    t ? (e.W_.__(), __PRIVATE_shouldStartWatchStream(e) ? __PRIVATE_startWatchStream(e) : e.K_.set("Unknown")) : (await e.W_.stop(), __PRIVATE_cleanUpWatchStreamState(e));
+  })), e.W_;
+}
 function __PRIVATE_ensureWriteStream(e) {
   return e.G_ || (e.G_ = function __PRIVATE_newPersistentWriteStream(e2, t, n) {
     const r = __PRIVATE_debugCast(e2);
@@ -32823,6 +33652,144 @@ function __PRIVATE_wrapInUserErrorIfRecoverable(e, t) {
     return new FirestoreError(D.UNAVAILABLE, `${t}: ${e}`);
   throw e;
 }
+
+class DocumentSet {
+  static emptySet(e) {
+    return new DocumentSet(e.comparator);
+  }
+  constructor(e) {
+    this.comparator = e ? (t, n) => e(t, n) || DocumentKey.comparator(t.key, n.key) : (e2, t) => DocumentKey.comparator(e2.key, t.key), this.keyedMap = documentMap(), this.sortedSet = new SortedMap(this.comparator);
+  }
+  has(e) {
+    return this.keyedMap.get(e) != null;
+  }
+  get(e) {
+    return this.keyedMap.get(e);
+  }
+  first() {
+    return this.sortedSet.minKey();
+  }
+  last() {
+    return this.sortedSet.maxKey();
+  }
+  isEmpty() {
+    return this.sortedSet.isEmpty();
+  }
+  indexOf(e) {
+    const t = this.keyedMap.get(e);
+    return t ? this.sortedSet.indexOf(t) : -1;
+  }
+  get size() {
+    return this.sortedSet.size;
+  }
+  forEach(e) {
+    this.sortedSet.inorderTraversal((t, n) => (e(t), false));
+  }
+  add(e) {
+    const t = this.delete(e.key);
+    return t.copy(t.keyedMap.insert(e.key, e), t.sortedSet.insert(e, null));
+  }
+  delete(e) {
+    const t = this.get(e);
+    return t ? this.copy(this.keyedMap.remove(e), this.sortedSet.remove(t)) : this;
+  }
+  isEqual(e) {
+    if (!(e instanceof DocumentSet))
+      return false;
+    if (this.size !== e.size)
+      return false;
+    const t = this.sortedSet.getIterator(), n = e.sortedSet.getIterator();
+    for (;t.hasNext(); ) {
+      const e2 = t.getNext().key, r = n.getNext().key;
+      if (!e2.isEqual(r))
+        return false;
+    }
+    return true;
+  }
+  toString() {
+    const e = [];
+    return this.forEach((t) => {
+      e.push(t.toString());
+    }), e.length === 0 ? "DocumentSet ()" : `DocumentSet (
+  ` + e.join(`  
+`) + `
+)`;
+  }
+  copy(e, t) {
+    const n = new DocumentSet;
+    return n.comparator = this.comparator, n.keyedMap = e, n.sortedSet = t, n;
+  }
+}
+
+class __PRIVATE_DocumentChangeSet {
+  constructor() {
+    this.z_ = new SortedMap(DocumentKey.comparator);
+  }
+  track(e) {
+    const t = e.doc.key, n = this.z_.get(t);
+    n ? e.type !== 0 && n.type === 3 ? this.z_ = this.z_.insert(t, e) : e.type === 3 && n.type !== 1 ? this.z_ = this.z_.insert(t, {
+      type: n.type,
+      doc: e.doc
+    }) : e.type === 2 && n.type === 2 ? this.z_ = this.z_.insert(t, {
+      type: 2,
+      doc: e.doc
+    }) : e.type === 2 && n.type === 0 ? this.z_ = this.z_.insert(t, {
+      type: 0,
+      doc: e.doc
+    }) : e.type === 1 && n.type === 0 ? this.z_ = this.z_.remove(t) : e.type === 1 && n.type === 2 ? this.z_ = this.z_.insert(t, {
+      type: 1,
+      doc: n.doc
+    }) : e.type === 0 && n.type === 1 ? this.z_ = this.z_.insert(t, {
+      type: 2,
+      doc: e.doc
+    }) : fail() : this.z_ = this.z_.insert(t, e);
+  }
+  j_() {
+    const e = [];
+    return this.z_.inorderTraversal((t, n) => {
+      e.push(n);
+    }), e;
+  }
+}
+
+class ViewSnapshot {
+  constructor(e, t, n, r, i, s, o, _, a) {
+    this.query = e, this.docs = t, this.oldDocs = n, this.docChanges = r, this.mutatedKeys = i, this.fromCache = s, this.syncStateChanged = o, this.excludesMetadataChanges = _, this.hasCachedResults = a;
+  }
+  static fromInitialDocuments(e, t, n, r, i) {
+    const s = [];
+    return t.forEach((e2) => {
+      s.push({
+        type: 0,
+        doc: e2
+      });
+    }), new ViewSnapshot(e, t, DocumentSet.emptySet(t), s, n, r, true, false, i);
+  }
+  get hasPendingWrites() {
+    return !this.mutatedKeys.isEmpty();
+  }
+  isEqual(e) {
+    if (!(this.fromCache === e.fromCache && this.hasCachedResults === e.hasCachedResults && this.syncStateChanged === e.syncStateChanged && this.mutatedKeys.isEqual(e.mutatedKeys) && __PRIVATE_queryEquals(this.query, e.query) && this.docs.isEqual(e.docs) && this.oldDocs.isEqual(e.oldDocs)))
+      return false;
+    const t = this.docChanges, n = e.docChanges;
+    if (t.length !== n.length)
+      return false;
+    for (let e2 = 0;e2 < t.length; e2++)
+      if (t[e2].type !== n[e2].type || !t[e2].doc.isEqual(n[e2].doc))
+        return false;
+    return true;
+  }
+}
+
+class __PRIVATE_QueryListenersInfo {
+  constructor() {
+    this.H_ = undefined, this.J_ = [];
+  }
+  Y_() {
+    return this.J_.some((e) => e.Z_());
+  }
+}
+
 class __PRIVATE_EventManagerImpl {
   constructor() {
     this.queries = __PRIVATE_newQueriesObjectMap(), this.onlineState = "Unknown", this.X_ = new Set;
@@ -32840,6 +33807,70 @@ class __PRIVATE_EventManagerImpl {
 function __PRIVATE_newQueriesObjectMap() {
   return new ObjectMap((e) => __PRIVATE_canonifyQuery(e), __PRIVATE_queryEquals);
 }
+async function __PRIVATE_eventManagerListen(e, t) {
+  const n = __PRIVATE_debugCast(e);
+  let r = 3;
+  const i = t.query;
+  let s = n.queries.get(i);
+  s ? !s.Y_() && t.Z_() && (r = 2) : (s = new __PRIVATE_QueryListenersInfo, r = t.Z_() ? 0 : 1);
+  try {
+    switch (r) {
+      case 0:
+        s.H_ = await n.onListen(i, true);
+        break;
+      case 1:
+        s.H_ = await n.onListen(i, false);
+        break;
+      case 2:
+        await n.onFirstRemoteStoreListen(i);
+    }
+  } catch (e2) {
+    const n2 = __PRIVATE_wrapInUserErrorIfRecoverable(e2, `Initialization of query '${__PRIVATE_stringifyQuery(t.query)}' failed`);
+    return void t.onError(n2);
+  }
+  if (n.queries.set(i, s), s.J_.push(t), t.ea(n.onlineState), s.H_) {
+    t.ta(s.H_) && __PRIVATE_raiseSnapshotsInSyncEvent(n);
+  }
+}
+async function __PRIVATE_eventManagerUnlisten(e, t) {
+  const n = __PRIVATE_debugCast(e), r = t.query;
+  let i = 3;
+  const s = n.queries.get(r);
+  if (s) {
+    const e2 = s.J_.indexOf(t);
+    e2 >= 0 && (s.J_.splice(e2, 1), s.J_.length === 0 ? i = t.Z_() ? 0 : 1 : !s.Y_() && t.Z_() && (i = 2));
+  }
+  switch (i) {
+    case 0:
+      return n.queries.delete(r), n.onUnlisten(r, true);
+    case 1:
+      return n.queries.delete(r), n.onUnlisten(r, false);
+    case 2:
+      return n.onLastRemoteStoreUnlisten(r);
+    default:
+      return;
+  }
+}
+function __PRIVATE_eventManagerOnWatchChange(e, t) {
+  const n = __PRIVATE_debugCast(e);
+  let r = false;
+  for (const e2 of t) {
+    const t2 = e2.query, i = n.queries.get(t2);
+    if (i) {
+      for (const t3 of i.J_)
+        t3.ta(e2) && (r = true);
+      i.H_ = e2;
+    }
+  }
+  r && __PRIVATE_raiseSnapshotsInSyncEvent(n);
+}
+function __PRIVATE_eventManagerOnWatchError(e, t, n) {
+  const r = __PRIVATE_debugCast(e), i = r.queries.get(t);
+  if (i)
+    for (const e2 of i.J_)
+      e2.onError(n);
+  r.queries.delete(t);
+}
 function __PRIVATE_raiseSnapshotsInSyncEvent(e) {
   e.X_.forEach((e2) => {
     e2.next();
@@ -32848,6 +33879,195 @@ function __PRIVATE_raiseSnapshotsInSyncEvent(e) {
 var pe;
 var ye;
 (ye = pe || (pe = {})).na = "default", ye.Cache = "cache";
+
+class __PRIVATE_QueryListener {
+  constructor(e, t, n) {
+    this.query = e, this.ra = t, this.ia = false, this.sa = null, this.onlineState = "Unknown", this.options = n || {};
+  }
+  ta(e) {
+    if (!this.options.includeMetadataChanges) {
+      const t2 = [];
+      for (const n of e.docChanges)
+        n.type !== 3 && t2.push(n);
+      e = new ViewSnapshot(e.query, e.docs, e.oldDocs, t2, e.mutatedKeys, e.fromCache, e.syncStateChanged, true, e.hasCachedResults);
+    }
+    let t = false;
+    return this.ia ? this.oa(e) && (this.ra.next(e), t = true) : this._a(e, this.onlineState) && (this.aa(e), t = true), this.sa = e, t;
+  }
+  onError(e) {
+    this.ra.error(e);
+  }
+  ea(e) {
+    this.onlineState = e;
+    let t = false;
+    return this.sa && !this.ia && this._a(this.sa, e) && (this.aa(this.sa), t = true), t;
+  }
+  _a(e, t) {
+    if (!e.fromCache)
+      return true;
+    if (!this.Z_())
+      return true;
+    const n = t !== "Offline";
+    return (!this.options.ua || !n) && (!e.docs.isEmpty() || e.hasCachedResults || t === "Offline");
+  }
+  oa(e) {
+    if (e.docChanges.length > 0)
+      return true;
+    const t = this.sa && this.sa.hasPendingWrites !== e.hasPendingWrites;
+    return !(!e.syncStateChanged && !t) && this.options.includeMetadataChanges === true;
+  }
+  aa(e) {
+    e = ViewSnapshot.fromInitialDocuments(e.query, e.docs, e.mutatedKeys, e.fromCache, e.hasCachedResults), this.ia = true, this.ra.next(e);
+  }
+  Z_() {
+    return this.options.source !== pe.Cache;
+  }
+}
+class __PRIVATE_AddedLimboDocument {
+  constructor(e) {
+    this.key = e;
+  }
+}
+
+class __PRIVATE_RemovedLimboDocument {
+  constructor(e) {
+    this.key = e;
+  }
+}
+
+class __PRIVATE_View {
+  constructor(e, t) {
+    this.query = e, this.Ea = t, this.Aa = null, this.hasCachedResults = false, this.current = false, this.Ra = __PRIVATE_documentKeySet(), this.mutatedKeys = __PRIVATE_documentKeySet(), this.Va = __PRIVATE_newQueryComparator(e), this.ma = new DocumentSet(this.Va);
+  }
+  get fa() {
+    return this.Ea;
+  }
+  ga(e, t) {
+    const n = t ? t.pa : new __PRIVATE_DocumentChangeSet, r = t ? t.ma : this.ma;
+    let i = t ? t.mutatedKeys : this.mutatedKeys, s = r, o = false;
+    const _ = this.query.limitType === "F" && r.size === this.query.limit ? r.last() : null, a = this.query.limitType === "L" && r.size === this.query.limit ? r.first() : null;
+    if (e.inorderTraversal((e2, t2) => {
+      const u = r.get(e2), c = __PRIVATE_queryMatches(this.query, t2) ? t2 : null, l = !!u && this.mutatedKeys.has(u.key), h = !!c && (c.hasLocalMutations || this.mutatedKeys.has(c.key) && c.hasCommittedMutations);
+      let P = false;
+      if (u && c) {
+        u.data.isEqual(c.data) ? l !== h && (n.track({
+          type: 3,
+          doc: c
+        }), P = true) : this.ya(u, c) || (n.track({
+          type: 2,
+          doc: c
+        }), P = true, (_ && this.Va(c, _) > 0 || a && this.Va(c, a) < 0) && (o = true));
+      } else
+        !u && c ? (n.track({
+          type: 0,
+          doc: c
+        }), P = true) : u && !c && (n.track({
+          type: 1,
+          doc: u
+        }), P = true, (_ || a) && (o = true));
+      P && (c ? (s = s.add(c), i = h ? i.add(e2) : i.delete(e2)) : (s = s.delete(e2), i = i.delete(e2)));
+    }), this.query.limit !== null)
+      for (;s.size > this.query.limit; ) {
+        const e2 = this.query.limitType === "F" ? s.last() : s.first();
+        s = s.delete(e2.key), i = i.delete(e2.key), n.track({
+          type: 1,
+          doc: e2
+        });
+      }
+    return {
+      ma: s,
+      pa: n,
+      ss: o,
+      mutatedKeys: i
+    };
+  }
+  ya(e, t) {
+    return e.hasLocalMutations && t.hasCommittedMutations && !t.hasLocalMutations;
+  }
+  applyChanges(e, t, n, r) {
+    const i = this.ma;
+    this.ma = e.ma, this.mutatedKeys = e.mutatedKeys;
+    const s = e.pa.j_();
+    s.sort((e2, t2) => function __PRIVATE_compareChangeType(e3, t3) {
+      const order = (e4) => {
+        switch (e4) {
+          case 0:
+            return 1;
+          case 2:
+          case 3:
+            return 2;
+          case 1:
+            return 0;
+          default:
+            return fail();
+        }
+      };
+      return order(e3) - order(t3);
+    }(e2.type, t2.type) || this.Va(e2.doc, t2.doc)), this.wa(n), r = r != null && r;
+    const o = t && !r ? this.Sa() : [], _ = this.Ra.size === 0 && this.current && !r ? 1 : 0, a = _ !== this.Aa;
+    if (this.Aa = _, s.length !== 0 || a) {
+      return {
+        snapshot: new ViewSnapshot(this.query, e.ma, i, s, e.mutatedKeys, _ === 0, a, false, !!n && n.resumeToken.approximateByteSize() > 0),
+        ba: o
+      };
+    }
+    return {
+      ba: o
+    };
+  }
+  ea(e) {
+    return this.current && e === "Offline" ? (this.current = false, this.applyChanges({
+      ma: this.ma,
+      pa: new __PRIVATE_DocumentChangeSet,
+      mutatedKeys: this.mutatedKeys,
+      ss: false
+    }, false)) : {
+      ba: []
+    };
+  }
+  Da(e) {
+    return !this.Ea.has(e) && (!!this.ma.has(e) && !this.ma.get(e).hasLocalMutations);
+  }
+  wa(e) {
+    e && (e.addedDocuments.forEach((e2) => this.Ea = this.Ea.add(e2)), e.modifiedDocuments.forEach((e2) => {
+    }), e.removedDocuments.forEach((e2) => this.Ea = this.Ea.delete(e2)), this.current = e.current);
+  }
+  Sa() {
+    if (!this.current)
+      return [];
+    const e = this.Ra;
+    this.Ra = __PRIVATE_documentKeySet(), this.ma.forEach((e2) => {
+      this.Da(e2.key) && (this.Ra = this.Ra.add(e2.key));
+    });
+    const t = [];
+    return e.forEach((e2) => {
+      this.Ra.has(e2) || t.push(new __PRIVATE_RemovedLimboDocument(e2));
+    }), this.Ra.forEach((n) => {
+      e.has(n) || t.push(new __PRIVATE_AddedLimboDocument(n));
+    }), t;
+  }
+  va(e) {
+    this.Ea = e.Es, this.Ra = __PRIVATE_documentKeySet();
+    const t = this.ga(e.documents);
+    return this.applyChanges(t, true);
+  }
+  Ca() {
+    return ViewSnapshot.fromInitialDocuments(this.query, this.ma, this.mutatedKeys, this.Aa === 0, this.hasCachedResults);
+  }
+}
+
+class __PRIVATE_QueryView {
+  constructor(e, t, n) {
+    this.query = e, this.targetId = t, this.view = n;
+  }
+}
+
+class LimboResolution {
+  constructor(e) {
+    this.key = e, this.Fa = false;
+  }
+}
+
 class __PRIVATE_SyncEngineImpl {
   constructor(e, t, n, r, i, s) {
     this.localStore = e, this.remoteStore = t, this.eventManager = n, this.sharedClientState = r, this.currentUser = i, this.maxConcurrentLimboResolutions = s, this.Ma = {}, this.xa = new ObjectMap((e2) => __PRIVATE_canonifyQuery(e2), __PRIVATE_queryEquals), this.Oa = new Map, this.Na = new Set, this.Ba = new SortedMap(DocumentKey.comparator), this.La = new Map, this.ka = new __PRIVATE_ReferenceSet, this.qa = {}, this.Qa = new Map, this.Ka = __PRIVATE_TargetIdGenerator.Qn(), this.onlineState = "Unknown", this.$a = undefined;
@@ -32855,6 +34075,49 @@ class __PRIVATE_SyncEngineImpl {
   get isPrimaryClient() {
     return this.$a === true;
   }
+}
+async function __PRIVATE_syncEngineListen(e, t, n = true) {
+  const r = __PRIVATE_ensureWatchCallbacks(e);
+  let i;
+  const s = r.xa.get(t);
+  return s ? (r.sharedClientState.addLocalQueryTarget(s.targetId), i = s.view.Ca()) : i = await __PRIVATE_allocateTargetAndMaybeListen(r, t, n, true), i;
+}
+async function __PRIVATE_triggerRemoteStoreListen(e, t) {
+  const n = __PRIVATE_ensureWatchCallbacks(e);
+  await __PRIVATE_allocateTargetAndMaybeListen(n, t, true, false);
+}
+async function __PRIVATE_allocateTargetAndMaybeListen(e, t, n, r) {
+  const i = await __PRIVATE_localStoreAllocateTarget(e.localStore, __PRIVATE_queryToTarget(t)), s = i.targetId, o = e.sharedClientState.addLocalQueryTarget(s, n);
+  let _;
+  return r && (_ = await __PRIVATE_initializeViewAndComputeSnapshot(e, t, s, o === "current", i.resumeToken)), e.isPrimaryClient && n && __PRIVATE_remoteStoreListen(e.remoteStore, i), _;
+}
+async function __PRIVATE_initializeViewAndComputeSnapshot(e, t, n, r, i) {
+  e.Ua = (t2, n2, r2) => async function __PRIVATE_applyDocChanges(e2, t3, n3, r3) {
+    let i2 = t3.view.ga(n3);
+    i2.ss && (i2 = await __PRIVATE_localStoreExecuteQuery(e2.localStore, t3.query, false).then(({ documents: e3 }) => t3.view.ga(e3, i2)));
+    const s2 = r3 && r3.targetChanges.get(t3.targetId), o2 = r3 && r3.targetMismatches.get(t3.targetId) != null, _2 = t3.view.applyChanges(i2, e2.isPrimaryClient, s2, o2);
+    return __PRIVATE_updateTrackedLimbos(e2, t3.targetId, _2.ba), _2.snapshot;
+  }(e, t2, n2, r2);
+  const s = await __PRIVATE_localStoreExecuteQuery(e.localStore, t, true), o = new __PRIVATE_View(t, s.Es), _ = o.ga(s.documents), a = TargetChange.createSynthesizedTargetChangeForCurrentChange(n, r && e.onlineState !== "Offline", i), u = o.applyChanges(_, e.isPrimaryClient, a);
+  __PRIVATE_updateTrackedLimbos(e, n, u.ba);
+  const c = new __PRIVATE_QueryView(t, n, o);
+  return e.xa.set(t, c), e.Oa.has(n) ? e.Oa.get(n).push(t) : e.Oa.set(n, [t]), u.snapshot;
+}
+async function __PRIVATE_syncEngineUnlisten(e, t, n) {
+  const r = __PRIVATE_debugCast(e), i = r.xa.get(t), s = r.Oa.get(i.targetId);
+  if (s.length > 1)
+    return r.Oa.set(i.targetId, s.filter((e2) => !__PRIVATE_queryEquals(e2, t))), void r.xa.delete(t);
+  if (r.isPrimaryClient) {
+    r.sharedClientState.removeLocalQueryTarget(i.targetId);
+    r.sharedClientState.isActiveQueryTarget(i.targetId) || await __PRIVATE_localStoreReleaseTarget(r.localStore, i.targetId, false).then(() => {
+      r.sharedClientState.clearQueryState(i.targetId), n && __PRIVATE_remoteStoreUnlisten(r.remoteStore, i.targetId), __PRIVATE_removeAndCleanupTarget(r, i.targetId);
+    }).catch(__PRIVATE_ignoreIfPrimaryLeaseLoss);
+  } else
+    __PRIVATE_removeAndCleanupTarget(r, i.targetId), await __PRIVATE_localStoreReleaseTarget(r.localStore, i.targetId, true);
+}
+async function __PRIVATE_triggerRemoteStoreUnlisten(e, t) {
+  const n = __PRIVATE_debugCast(e), r = n.xa.get(t), i = n.Oa.get(r.targetId);
+  n.isPrimaryClient && i.length === 1 && (n.sharedClientState.removeLocalQueryTarget(r.targetId), __PRIVATE_remoteStoreUnlisten(n.remoteStore, r.targetId));
 }
 async function __PRIVATE_syncEngineWrite(e, t, n) {
   const r = __PRIVATE_syncEngineEnsureWriteCallbacks(e);
@@ -32896,6 +34159,18 @@ async function __PRIVATE_syncEngineWrite(e, t, n) {
     n.reject(t2);
   }
 }
+async function __PRIVATE_syncEngineApplyRemoteEvent(e, t) {
+  const n = __PRIVATE_debugCast(e);
+  try {
+    const e2 = await __PRIVATE_localStoreApplyRemoteEventToLocalCache(n.localStore, t);
+    t.targetChanges.forEach((e3, t2) => {
+      const r = n.La.get(t2);
+      r && (__PRIVATE_hardAssert(e3.addedDocuments.size + e3.modifiedDocuments.size + e3.removedDocuments.size <= 1), e3.addedDocuments.size > 0 ? r.Fa = true : e3.modifiedDocuments.size > 0 ? __PRIVATE_hardAssert(r.Fa) : e3.removedDocuments.size > 0 && (__PRIVATE_hardAssert(r.Fa), r.Fa = false));
+    }), await __PRIVATE_syncEngineEmitNewSnapsAndNotifyLocalStore(n, e2, t);
+  } catch (e2) {
+    await __PRIVATE_ignoreIfPrimaryLeaseLoss(e2);
+  }
+}
 function __PRIVATE_syncEngineApplyOnlineStateChange(e, t, n) {
   const r = __PRIVATE_debugCast(e);
   if (r.isPrimaryClient && n === 0 || !r.isPrimaryClient && n === 1) {
@@ -32913,6 +34188,18 @@ function __PRIVATE_syncEngineApplyOnlineStateChange(e, t, n) {
       }), r2 && __PRIVATE_raiseSnapshotsInSyncEvent(n2);
     }(r.eventManager, t), e2.length && r.Ma.R_(e2), r.onlineState = t, r.isPrimaryClient && r.sharedClientState.setOnlineState(t);
   }
+}
+async function __PRIVATE_syncEngineRejectListen(e, t, n) {
+  const r = __PRIVATE_debugCast(e);
+  r.sharedClientState.updateQueryState(t, "rejected", n);
+  const i = r.La.get(t), s = i && i.key;
+  if (s) {
+    let e2 = new SortedMap(DocumentKey.comparator);
+    e2 = e2.insert(s, MutableDocument.newNoDocument(s, SnapshotVersion.min()));
+    const n2 = __PRIVATE_documentKeySet().add(s), i2 = new RemoteEvent(SnapshotVersion.min(), new Map, new SortedMap(__PRIVATE_primitiveComparator), e2, n2);
+    await __PRIVATE_syncEngineApplyRemoteEvent(r, i2), r.Ba = r.Ba.remove(s), r.La.delete(t), __PRIVATE_pumpEnqueuedLimboResolutions(r);
+  } else
+    await __PRIVATE_localStoreReleaseTarget(r.localStore, t, false).then(() => __PRIVATE_removeAndCleanupTarget(r, t, n)).catch(__PRIVATE_ignoreIfPrimaryLeaseLoss);
 }
 async function __PRIVATE_syncEngineApplySuccessfulWrite(e, t) {
   const n = __PRIVATE_debugCast(e), r = t.batch.batchId;
@@ -32949,6 +34236,43 @@ function __PRIVATE_processUserCallback(e, t, n) {
   if (i) {
     const e2 = i.get(t);
     e2 && (n ? e2.reject(n) : e2.resolve(), i = i.remove(t)), r.qa[r.currentUser.toKey()] = i;
+  }
+}
+function __PRIVATE_removeAndCleanupTarget(e, t, n = null) {
+  e.sharedClientState.removeLocalQueryTarget(t);
+  for (const r of e.Oa.get(t))
+    e.xa.delete(r), n && e.Ma.Wa(r, n);
+  if (e.Oa.delete(t), e.isPrimaryClient) {
+    e.ka.yr(t).forEach((t2) => {
+      e.ka.containsKey(t2) || __PRIVATE_removeLimboTarget(e, t2);
+    });
+  }
+}
+function __PRIVATE_removeLimboTarget(e, t) {
+  e.Na.delete(t.path.canonicalString());
+  const n = e.Ba.get(t);
+  n !== null && (__PRIVATE_remoteStoreUnlisten(e.remoteStore, n), e.Ba = e.Ba.remove(t), e.La.delete(n), __PRIVATE_pumpEnqueuedLimboResolutions(e));
+}
+function __PRIVATE_updateTrackedLimbos(e, t, n) {
+  for (const r of n)
+    if (r instanceof __PRIVATE_AddedLimboDocument)
+      e.ka.addReference(r.key, t), __PRIVATE_trackLimboChange(e, r);
+    else if (r instanceof __PRIVATE_RemovedLimboDocument) {
+      __PRIVATE_logDebug("SyncEngine", "Document no longer in limbo: " + r.key), e.ka.removeReference(r.key, t);
+      e.ka.containsKey(r.key) || __PRIVATE_removeLimboTarget(e, r.key);
+    } else
+      fail();
+}
+function __PRIVATE_trackLimboChange(e, t) {
+  const n = t.key, r = n.path.canonicalString();
+  e.Ba.get(n) || e.Na.has(r) || (__PRIVATE_logDebug("SyncEngine", "New document in limbo: " + n), e.Na.add(r), __PRIVATE_pumpEnqueuedLimboResolutions(e));
+}
+function __PRIVATE_pumpEnqueuedLimboResolutions(e) {
+  for (;e.Na.size > 0 && e.Ba.size < e.maxConcurrentLimboResolutions; ) {
+    const t = e.Na.values().next().value;
+    e.Na.delete(t);
+    const n = new DocumentKey(ResourcePath.fromString(t)), r = e.Ka.next();
+    e.La.set(r, new LimboResolution(n)), e.Ba = e.Ba.insert(n, r), __PRIVATE_remoteStoreListen(e.remoteStore, new TargetData(__PRIVATE_queryToTarget(__PRIVATE_newQueryForPath(n.path)), r, "TargetPurposeLimboResolution", __PRIVATE_ListenSequence.oe));
   }
 }
 async function __PRIVATE_syncEngineEmitNewSnapsAndNotifyLocalStore(e, t, n) {
@@ -32997,6 +34321,26 @@ async function __PRIVATE_syncEngineHandleCredentialChange(e, t) {
       }), e3.Qa.clear();
     }(n, "'waitForPendingWrites' promise is rejected due to a user change."), n.sharedClientState.handleUserChange(t, e2.removedBatchIds, e2.addedBatchIds), await __PRIVATE_syncEngineEmitNewSnapsAndNotifyLocalStore(n, e2.Ts);
   }
+}
+function __PRIVATE_syncEngineGetRemoteKeysForTarget(e, t) {
+  const n = __PRIVATE_debugCast(e), r = n.La.get(t);
+  if (r && r.Fa)
+    return __PRIVATE_documentKeySet().add(r.key);
+  {
+    let e2 = __PRIVATE_documentKeySet();
+    const r2 = n.Oa.get(t);
+    if (!r2)
+      return e2;
+    for (const t2 of r2) {
+      const r3 = n.xa.get(t2);
+      e2 = e2.unionWith(r3.view.fa);
+    }
+    return e2;
+  }
+}
+function __PRIVATE_ensureWatchCallbacks(e) {
+  const t = __PRIVATE_debugCast(e);
+  return t.remoteStore.remoteSyncer.applyRemoteEvent = __PRIVATE_syncEngineApplyRemoteEvent.bind(null, t), t.remoteStore.remoteSyncer.getRemoteKeysForTarget = __PRIVATE_syncEngineGetRemoteKeysForTarget.bind(null, t), t.remoteStore.remoteSyncer.rejectListen = __PRIVATE_syncEngineRejectListen.bind(null, t), t.Ma.R_ = __PRIVATE_eventManagerOnWatchChange.bind(null, t.eventManager), t.Ma.Wa = __PRIVATE_eventManagerOnWatchError.bind(null, t.eventManager), t;
 }
 function __PRIVATE_syncEngineEnsureWriteCallbacks(e) {
   const t = __PRIVATE_debugCast(e);
@@ -33088,6 +34432,25 @@ class OnlineComponentProvider {
 OnlineComponentProvider.provider = {
   build: () => new OnlineComponentProvider
 };
+class __PRIVATE_AsyncObserver {
+  constructor(e) {
+    this.observer = e, this.muted = false;
+  }
+  next(e) {
+    this.muted || this.observer.next && this.Xa(this.observer.next, e);
+  }
+  error(e) {
+    this.muted || (this.observer.error ? this.Xa(this.observer.error, e) : __PRIVATE_logError("Uncaught Error in snapshot listener:", e.toString()));
+  }
+  eu() {
+    this.muted = true;
+  }
+  Xa(e, t) {
+    setTimeout(() => {
+      this.muted || e(t);
+    }, 0);
+  }
+}
 class FirestoreClient {
   constructor(e, t, n, r, i) {
     this.authCredentials = e, this.appCheckCredentials = t, this.asyncQueue = n, this.databaseInfo = r, this.user = User.UNAUTHENTICATED, this.clientId = __PRIVATE_AutoId.newId(), this.authCredentialListener = () => Promise.resolve(), this.appCheckCredentialListener = () => Promise.resolve(), this._uninitializedComponentsProvider = i, this.authCredentials.start(n, async (e2) => {
@@ -33161,6 +34524,25 @@ async function __PRIVATE_ensureOnlineComponents(e) {
 }
 function __PRIVATE_getSyncEngine(e) {
   return __PRIVATE_ensureOnlineComponents(e).then((e2) => e2.syncEngine);
+}
+async function __PRIVATE_getEventManager(e) {
+  const t = await __PRIVATE_ensureOnlineComponents(e), n = t.eventManager;
+  return n.onListen = __PRIVATE_syncEngineListen.bind(null, t.syncEngine), n.onUnlisten = __PRIVATE_syncEngineUnlisten.bind(null, t.syncEngine), n.onFirstRemoteStoreListen = __PRIVATE_triggerRemoteStoreListen.bind(null, t.syncEngine), n.onLastRemoteStoreUnlisten = __PRIVATE_triggerRemoteStoreUnlisten.bind(null, t.syncEngine), n;
+}
+function __PRIVATE_firestoreClientGetDocumentsViaSnapshotListener(e, t, n = {}) {
+  const r = new __PRIVATE_Deferred;
+  return e.asyncQueue.enqueueAndForget(async () => function __PRIVATE_executeQueryViaSnapshotListener(e2, t2, n2, r2, i) {
+    const s = new __PRIVATE_AsyncObserver({
+      next: (n3) => {
+        s.eu(), t2.enqueueAndForget(() => __PRIVATE_eventManagerUnlisten(e2, o)), n3.fromCache && r2.source === "server" ? i.reject(new FirestoreError(D.UNAVAILABLE, 'Failed to get documents from server. (However, these documents may exist in the local cache. Run again without setting source to "server" to retrieve the cached documents.)')) : i.resolve(n3);
+      },
+      error: (e3) => i.reject(e3)
+    }), o = new __PRIVATE_QueryListener(n2, s, {
+      includeMetadataChanges: true,
+      ua: true
+    });
+    return __PRIVATE_eventManagerListen(e2, o);
+  }(await __PRIVATE_getEventManager(e), e.asyncQueue, t, n, r)), r.promise;
 }
 function __PRIVATE_cloneLongPollingOptions(e) {
   const t = {};
@@ -33750,6 +35132,9 @@ function __PRIVATE_parseSetData(e, t, n, r, i, s = {}) {
     a = null, u = o.fieldTransforms;
   return new ParsedSetData(new ObjectValue(_), a, u);
 }
+function __PRIVATE_parseQueryValue(e, t, n, r = false) {
+  return __PRIVATE_parseData(n, e.$u(r ? 4 : 3, t));
+}
 function __PRIVATE_parseData(e, t) {
   if (__PRIVATE_looksLikeJsonObject(e = getModularInstance(e)))
     return __PRIVATE_validatePlainObject("Unsupported field value:", t, e), __PRIVATE_parseObject(e, t);
@@ -33902,9 +35287,376 @@ function __PRIVATE_createError(e, t, n, r, i) {
 function __PRIVATE_fieldMaskContains(e, t) {
   return e.some((e2) => e2.isEqual(t));
 }
+
+class DocumentSnapshot$1 {
+  constructor(e, t, n, r, i) {
+    this._firestore = e, this._userDataWriter = t, this._key = n, this._document = r, this._converter = i;
+  }
+  get id() {
+    return this._key.path.lastSegment();
+  }
+  get ref() {
+    return new DocumentReference(this._firestore, this._converter, this._key);
+  }
+  exists() {
+    return this._document !== null;
+  }
+  data() {
+    if (this._document) {
+      if (this._converter) {
+        const e = new QueryDocumentSnapshot$1(this._firestore, this._userDataWriter, this._key, this._document, null);
+        return this._converter.fromFirestore(e);
+      }
+      return this._userDataWriter.convertValue(this._document.data.value);
+    }
+  }
+  get(e) {
+    if (this._document) {
+      const t = this._document.data.field(__PRIVATE_fieldPathFromArgument("DocumentSnapshot.get", e));
+      if (t !== null)
+        return this._userDataWriter.convertValue(t);
+    }
+  }
+}
+
+class QueryDocumentSnapshot$1 extends DocumentSnapshot$1 {
+  data() {
+    return super.data();
+  }
+}
+function __PRIVATE_fieldPathFromArgument(e, t) {
+  return typeof t == "string" ? __PRIVATE_fieldPathFromDotSeparatedString(e, t) : t instanceof FieldPath ? t._internalPath : t._delegate._internalPath;
+}
+function __PRIVATE_validateHasExplicitOrderByForLimitToLast(e) {
+  if (e.limitType === "L" && e.explicitOrderBy.length === 0)
+    throw new FirestoreError(D.UNIMPLEMENTED, "limitToLast() queries require specifying at least one orderBy() clause");
+}
+
+class AppliableConstraint {
+}
+
+class QueryConstraint extends AppliableConstraint {
+}
+function query(e, t, ...n) {
+  let r = [];
+  t instanceof AppliableConstraint && r.push(t), r = r.concat(n), function __PRIVATE_validateQueryConstraintArray(e2) {
+    const t2 = e2.filter((e3) => e3 instanceof QueryCompositeFilterConstraint).length, n2 = e2.filter((e3) => e3 instanceof QueryFieldFilterConstraint).length;
+    if (t2 > 1 || t2 > 0 && n2 > 0)
+      throw new FirestoreError(D.INVALID_ARGUMENT, "InvalidQuery. When using composite filters, you cannot use more than one filter at the top level. Consider nesting the multiple filters within an `and(...)` statement. For example: change `query(query, where(...), or(...))` to `query(query, and(where(...), or(...)))`.");
+  }(r);
+  for (const t2 of r)
+    e = t2._apply(e);
+  return e;
+}
+
+class QueryFieldFilterConstraint extends QueryConstraint {
+  constructor(e, t, n) {
+    super(), this._field = e, this._op = t, this._value = n, this.type = "where";
+  }
+  static _create(e, t, n) {
+    return new QueryFieldFilterConstraint(e, t, n);
+  }
+  _apply(e) {
+    const t = this._parse(e);
+    return __PRIVATE_validateNewFieldFilter(e._query, t), new Query(e.firestore, e.converter, __PRIVATE_queryWithAddedFilter(e._query, t));
+  }
+  _parse(e) {
+    const t = __PRIVATE_newUserDataReader(e.firestore), n = function __PRIVATE_newQueryFilter(e2, t2, n2, r, i, s, o) {
+      let _;
+      if (i.isKeyField()) {
+        if (s === "array-contains" || s === "array-contains-any")
+          throw new FirestoreError(D.INVALID_ARGUMENT, `Invalid Query. You can't perform '${s}' queries on documentId().`);
+        if (s === "in" || s === "not-in") {
+          __PRIVATE_validateDisjunctiveFilterElements(o, s);
+          const t3 = [];
+          for (const n3 of o)
+            t3.push(__PRIVATE_parseDocumentIdValue(r, e2, n3));
+          _ = {
+            arrayValue: {
+              values: t3
+            }
+          };
+        } else
+          _ = __PRIVATE_parseDocumentIdValue(r, e2, o);
+      } else
+        s !== "in" && s !== "not-in" && s !== "array-contains-any" || __PRIVATE_validateDisjunctiveFilterElements(o, s), _ = __PRIVATE_parseQueryValue(n2, t2, o, s === "in" || s === "not-in");
+      return FieldFilter.create(i, s, _);
+    }(e._query, "where", t, e.firestore._databaseId, this._field, this._op, this._value);
+    return n;
+  }
+}
+function where(e, t, n) {
+  const r = t, i = __PRIVATE_fieldPathFromArgument("where", e);
+  return QueryFieldFilterConstraint._create(i, r, n);
+}
+
+class QueryCompositeFilterConstraint extends AppliableConstraint {
+  constructor(e, t) {
+    super(), this.type = e, this._queryConstraints = t;
+  }
+  static _create(e, t) {
+    return new QueryCompositeFilterConstraint(e, t);
+  }
+  _parse(e) {
+    const t = this._queryConstraints.map((t2) => t2._parse(e)).filter((e2) => e2.getFilters().length > 0);
+    return t.length === 1 ? t[0] : CompositeFilter.create(t, this._getOperator());
+  }
+  _apply(e) {
+    const t = this._parse(e);
+    return t.getFilters().length === 0 ? e : (function __PRIVATE_validateNewFilter(e2, t2) {
+      let n = e2;
+      const r = t2.getFlattenedFilters();
+      for (const e3 of r)
+        __PRIVATE_validateNewFieldFilter(n, e3), n = __PRIVATE_queryWithAddedFilter(n, e3);
+    }(e._query, t), new Query(e.firestore, e.converter, __PRIVATE_queryWithAddedFilter(e._query, t)));
+  }
+  _getQueryConstraints() {
+    return this._queryConstraints;
+  }
+  _getOperator() {
+    return this.type === "and" ? "and" : "or";
+  }
+}
+function __PRIVATE_parseDocumentIdValue(e, t, n) {
+  if (typeof (n = getModularInstance(n)) == "string") {
+    if (n === "")
+      throw new FirestoreError(D.INVALID_ARGUMENT, "Invalid query. When querying with documentId(), you must provide a valid document ID, but it was an empty string.");
+    if (!__PRIVATE_isCollectionGroupQuery(t) && n.indexOf("/") !== -1)
+      throw new FirestoreError(D.INVALID_ARGUMENT, `Invalid query. When querying a collection by documentId(), you must provide a plain document ID, but '${n}' contains a '/' character.`);
+    const r = t.path.child(ResourcePath.fromString(n));
+    if (!DocumentKey.isDocumentKey(r))
+      throw new FirestoreError(D.INVALID_ARGUMENT, `Invalid query. When querying a collection group by documentId(), the value provided must result in a valid document path, but '${r}' is not because it has an odd number of segments (${r.length}).`);
+    return __PRIVATE_refValue(e, new DocumentKey(r));
+  }
+  if (n instanceof DocumentReference)
+    return __PRIVATE_refValue(e, n._key);
+  throw new FirestoreError(D.INVALID_ARGUMENT, `Invalid query. When querying with documentId(), you must provide a valid string or a DocumentReference, but it was: ${__PRIVATE_valueDescription(n)}.`);
+}
+function __PRIVATE_validateDisjunctiveFilterElements(e, t) {
+  if (!Array.isArray(e) || e.length === 0)
+    throw new FirestoreError(D.INVALID_ARGUMENT, `Invalid Query. A non-empty array is required for '${t.toString()}' filters.`);
+}
+function __PRIVATE_validateNewFieldFilter(e, t) {
+  const n = function __PRIVATE_findOpInsideFilters(e2, t2) {
+    for (const n2 of e2)
+      for (const e3 of n2.getFlattenedFilters())
+        if (t2.indexOf(e3.op) >= 0)
+          return e3.op;
+    return null;
+  }(e.filters, function __PRIVATE_conflictingOps(e2) {
+    switch (e2) {
+      case "!=":
+        return ["!=", "not-in"];
+      case "array-contains-any":
+      case "in":
+        return ["not-in"];
+      case "not-in":
+        return ["array-contains-any", "in", "not-in", "!="];
+      default:
+        return [];
+    }
+  }(t.op));
+  if (n !== null)
+    throw n === t.op ? new FirestoreError(D.INVALID_ARGUMENT, `Invalid query. You cannot use more than one '${t.op.toString()}' filter.`) : new FirestoreError(D.INVALID_ARGUMENT, `Invalid query. You cannot use '${t.op.toString()}' filters with '${n.toString()}' filters.`);
+}
+class AbstractUserDataWriter {
+  convertValue(e, t = "none") {
+    switch (__PRIVATE_typeOrder(e)) {
+      case 0:
+        return null;
+      case 1:
+        return e.booleanValue;
+      case 2:
+        return __PRIVATE_normalizeNumber(e.integerValue || e.doubleValue);
+      case 3:
+        return this.convertTimestamp(e.timestampValue);
+      case 4:
+        return this.convertServerTimestamp(e, t);
+      case 5:
+        return e.stringValue;
+      case 6:
+        return this.convertBytes(__PRIVATE_normalizeByteString(e.bytesValue));
+      case 7:
+        return this.convertReference(e.referenceValue);
+      case 8:
+        return this.convertGeoPoint(e.geoPointValue);
+      case 9:
+        return this.convertArray(e.arrayValue, t);
+      case 11:
+        return this.convertObject(e.mapValue, t);
+      case 10:
+        return this.convertVectorValue(e.mapValue);
+      default:
+        throw fail();
+    }
+  }
+  convertObject(e, t) {
+    return this.convertObjectMap(e.fields, t);
+  }
+  convertObjectMap(e, t = "none") {
+    const n = {};
+    return forEach(e, (e2, r) => {
+      n[e2] = this.convertValue(r, t);
+    }), n;
+  }
+  convertVectorValue(e) {
+    var t, n, r;
+    const i = (r = (n = (t = e.fields) === null || t === undefined ? undefined : t.value.arrayValue) === null || n === undefined ? undefined : n.values) === null || r === undefined ? undefined : r.map((e2) => __PRIVATE_normalizeNumber(e2.doubleValue));
+    return new VectorValue(i);
+  }
+  convertGeoPoint(e) {
+    return new GeoPoint(__PRIVATE_normalizeNumber(e.latitude), __PRIVATE_normalizeNumber(e.longitude));
+  }
+  convertArray(e, t) {
+    return (e.values || []).map((e2) => this.convertValue(e2, t));
+  }
+  convertServerTimestamp(e, t) {
+    switch (t) {
+      case "previous":
+        const n = __PRIVATE_getPreviousValue(e);
+        return n == null ? null : this.convertValue(n, t);
+      case "estimate":
+        return this.convertTimestamp(__PRIVATE_getLocalWriteTime(e));
+      default:
+        return null;
+    }
+  }
+  convertTimestamp(e) {
+    const t = __PRIVATE_normalizeTimestamp(e);
+    return new Timestamp(t.seconds, t.nanos);
+  }
+  convertDocumentKey(e, t) {
+    const n = ResourcePath.fromString(e);
+    __PRIVATE_hardAssert(__PRIVATE_isValidResourceName(n));
+    const r = new DatabaseId(n.get(1), n.get(3)), i = new DocumentKey(n.popFirst(5));
+    return r.isEqual(t) || __PRIVATE_logError(`Document ${i} contains a document reference within a different database (${r.projectId}/${r.database}) which is not supported. It will be treated as a reference in the current database (${t.projectId}/${t.database}) instead.`), i;
+  }
+}
 function __PRIVATE_applyFirestoreDataConverter(e, t, n) {
   let r;
   return r = e ? n && (n.merge || n.mergeFields) ? e.toFirestore(t, n) : e.toFirestore(t) : t, r;
+}
+class SnapshotMetadata {
+  constructor(e, t) {
+    this.hasPendingWrites = e, this.fromCache = t;
+  }
+  isEqual(e) {
+    return this.hasPendingWrites === e.hasPendingWrites && this.fromCache === e.fromCache;
+  }
+}
+
+class DocumentSnapshot extends DocumentSnapshot$1 {
+  constructor(e, t, n, r, i, s) {
+    super(e, t, n, r, s), this._firestore = e, this._firestoreImpl = e, this.metadata = i;
+  }
+  exists() {
+    return super.exists();
+  }
+  data(e = {}) {
+    if (this._document) {
+      if (this._converter) {
+        const t = new QueryDocumentSnapshot(this._firestore, this._userDataWriter, this._key, this._document, this.metadata, null);
+        return this._converter.fromFirestore(t, e);
+      }
+      return this._userDataWriter.convertValue(this._document.data.value, e.serverTimestamps);
+    }
+  }
+  get(e, t = {}) {
+    if (this._document) {
+      const n = this._document.data.field(__PRIVATE_fieldPathFromArgument("DocumentSnapshot.get", e));
+      if (n !== null)
+        return this._userDataWriter.convertValue(n, t.serverTimestamps);
+    }
+  }
+}
+
+class QueryDocumentSnapshot extends DocumentSnapshot {
+  data(e = {}) {
+    return super.data(e);
+  }
+}
+
+class QuerySnapshot {
+  constructor(e, t, n, r) {
+    this._firestore = e, this._userDataWriter = t, this._snapshot = r, this.metadata = new SnapshotMetadata(r.hasPendingWrites, r.fromCache), this.query = n;
+  }
+  get docs() {
+    const e = [];
+    return this.forEach((t) => e.push(t)), e;
+  }
+  get size() {
+    return this._snapshot.docs.size;
+  }
+  get empty() {
+    return this.size === 0;
+  }
+  forEach(e, t) {
+    this._snapshot.docs.forEach((n) => {
+      e.call(t, new QueryDocumentSnapshot(this._firestore, this._userDataWriter, n.key, n, new SnapshotMetadata(this._snapshot.mutatedKeys.has(n.key), this._snapshot.fromCache), this.query.converter));
+    });
+  }
+  docChanges(e = {}) {
+    const t = !!e.includeMetadataChanges;
+    if (t && this._snapshot.excludesMetadataChanges)
+      throw new FirestoreError(D.INVALID_ARGUMENT, "To include metadata changes with your document changes, you must also pass { includeMetadataChanges:true } to onSnapshot().");
+    return this._cachedChanges && this._cachedChangesIncludeMetadataChanges === t || (this._cachedChanges = function __PRIVATE_changesFromSnapshot(e2, t2) {
+      if (e2._snapshot.oldDocs.isEmpty()) {
+        let t3 = 0;
+        return e2._snapshot.docChanges.map((n) => {
+          const r = new QueryDocumentSnapshot(e2._firestore, e2._userDataWriter, n.doc.key, n.doc, new SnapshotMetadata(e2._snapshot.mutatedKeys.has(n.doc.key), e2._snapshot.fromCache), e2.query.converter);
+          return n.doc, {
+            type: "added",
+            doc: r,
+            oldIndex: -1,
+            newIndex: t3++
+          };
+        });
+      }
+      {
+        let n = e2._snapshot.oldDocs;
+        return e2._snapshot.docChanges.filter((e3) => t2 || e3.type !== 3).map((t3) => {
+          const r = new QueryDocumentSnapshot(e2._firestore, e2._userDataWriter, t3.doc.key, t3.doc, new SnapshotMetadata(e2._snapshot.mutatedKeys.has(t3.doc.key), e2._snapshot.fromCache), e2.query.converter);
+          let i = -1, s = -1;
+          return t3.type !== 0 && (i = n.indexOf(t3.doc.key), n = n.delete(t3.doc.key)), t3.type !== 1 && (n = n.add(t3.doc), s = n.indexOf(t3.doc.key)), {
+            type: __PRIVATE_resultChangeType(t3.type),
+            doc: r,
+            oldIndex: i,
+            newIndex: s
+          };
+        });
+      }
+    }(this, t), this._cachedChangesIncludeMetadataChanges = t), this._cachedChanges;
+  }
+}
+function __PRIVATE_resultChangeType(e) {
+  switch (e) {
+    case 0:
+      return "added";
+    case 2:
+    case 3:
+      return "modified";
+    case 1:
+      return "removed";
+    default:
+      return fail();
+  }
+}
+class __PRIVATE_ExpUserDataWriter extends AbstractUserDataWriter {
+  constructor(e) {
+    super(), this.firestore = e;
+  }
+  convertBytes(e) {
+    return new Bytes(e);
+  }
+  convertReference(e) {
+    const t = this.convertDocumentKey(e, this.firestore._databaseId);
+    return new DocumentReference(this.firestore, null, t);
+  }
+}
+function getDocs(e) {
+  e = __PRIVATE_cast(e, Query);
+  const t = __PRIVATE_cast(e.firestore, Firestore), n = ensureFirestoreConfigured(t), r = new __PRIVATE_ExpUserDataWriter(t);
+  return __PRIVATE_validateHasExplicitOrderByForLimitToLast(e._query), __PRIVATE_firestoreClientGetDocumentsViaSnapshotListener(n, e._query).then((n2) => new QuerySnapshot(t, r, e, n2));
 }
 function addDoc(e, t) {
   const n = __PRIVATE_cast(e.firestore, Firestore), r = doc(e), i = __PRIVATE_applyFirestoreDataConverter(e.converter, t);
@@ -33952,65 +35704,34 @@ var Step = ({ children }) => {
     children
   }, undefined, false, undefined, this);
 };
-var families = [
-  {
-    name: "McClay",
-    members: [
-      {
-        name: "Claire McClay",
-        attending: false,
-        dietaryRestrictions: ""
-      },
-      {
-        name: "Shane McClay",
-        attending: false,
-        dietaryRestrictions: ""
-      },
-      {
-        name: "Quinn McClay",
-        attending: false,
-        dietaryRestrictions: ""
-      },
-      {
-        name: "Mars McClay",
-        attending: false,
-        dietaryRestrictions: ""
-      }
-    ]
-  },
-  {
-    name: "Wagman and Powers",
-    members: [
-      {
-        name: "Jillian Wagman",
-        attending: false,
-        dietaryRestrictions: ""
-      },
-      {
-        name: "Michael Powers",
-        attending: false,
-        dietaryRestrictions: ""
-      }
-    ]
-  }
-];
 var RSVP = () => {
   const [step, setStep] = import_react3.useState(1);
   const [search, setSearch] = import_react3.useState("");
   const [family, setFamily] = import_react3.useState();
   const [error, setError] = import_react3.useState("");
-  const handleFindFamily = (e) => {
+  const handleFindFamily = async (e) => {
     e.preventDefault();
-    const family2 = families.find((family3) => {
-      return family3.members.find((member) => member?.name?.toLowerCase() === search.toLowerCase());
-    });
-    console.log("family", family2);
-    if (family2) {
-      setFamily(() => family2);
-      setError("");
-      setStep(2);
-    } else {
-      setError("Oops, try again");
+    const errorText = "Oops, try another name or call me: 831.325.6813";
+    try {
+      const familiesRef = collection(db, "families");
+      const capitalizedName = search.toLowerCase().trim().split(" ").map((n) => n[0].toUpperCase() + n.slice(1)).join(" ");
+      const q = query(familiesRef, where("members", "array-contains", {
+        name: capitalizedName,
+        attending: false,
+        dietaryRestrictions: ""
+      }));
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        const familyDoc = querySnapshot.docs[0].data();
+        setFamily(() => familyDoc);
+        setError("");
+        setStep(2);
+      } else {
+        setError(errorText);
+      }
+    } catch (error2) {
+      console.error("Error finding family: ", error2);
+      setError(errorText);
     }
   };
   const updateFamilyMember = (member, key, value) => {
@@ -34019,7 +35740,11 @@ var RSVP = () => {
     if (updatedMember) {
       updatedMember[key] = value;
     }
-    console.log("updatedFamily", updatedFamily);
+    setFamily(() => updatedFamily);
+  };
+  const updateFamilyEmail = (email) => {
+    const updatedFamily = { ...family };
+    updatedFamily.email = email;
     setFamily(() => updatedFamily);
   };
   const handleSubmit = async (e) => {
@@ -34127,11 +35852,28 @@ var RSVP = () => {
                   ]
                 }, member.name, true, undefined, this);
               }),
-              /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("button", {
-                onClick: handleSubmit,
-                type: "submit",
-                children: "RSVP"
-              }, undefined, false, undefined, this)
+              /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
+                className: "rsvp-form-row",
+                children: [
+                  /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("label", {
+                    className: `rsvp-form-email ${family?.members.some((m) => m.attending) && "active"}`,
+                    children: [
+                      "Please add an email",
+                      /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("input", {
+                        placeholder: "email",
+                        name: "email",
+                        type: "email",
+                        onChange: (e) => updateFamilyEmail(e.target.value)
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("button", {
+                    onClick: handleSubmit,
+                    type: "submit",
+                    children: "RSVP"
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
             ]
           }, undefined, true, undefined, this)
         ]
@@ -34139,7 +35881,7 @@ var RSVP = () => {
       step === 1 && /* @__PURE__ */ jsx_dev_runtime3.jsxDEV(Step, {
         children: [
           /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("h3", {
-            children: "Step 1: Find Your Crew"
+            children: "Step 1: Search for a member of your family"
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("form", {
             className: "rsvp-form rsvp-form-find",
@@ -34227,8 +35969,18 @@ var Schedule = () => {
         children: "Wedding"
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
-        children: "Please join us at General Prim for our wedding ceremony. Drinks, dinner, and celebration to follow."
-      }, undefined, false, undefined, this),
+        children: [
+          "Please join us at",
+          " ",
+          /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("a", {
+            target: "_blank",
+            href: "https://www.google.com/maps/place/Proyectos+P%C3%BAblicos/@19.4294481,-99.1527793,17z/data=!3m1!4b1!4m6!3m5!1s0x85d1ff2d1ad218f3:0x91c0786937fd6dc8!8m2!3d19.4294481!4d-99.1527793!16s%2Fg%2F11c0vlh4jj?entry=ttu&g_ep=EgoyMDI1MDEyMi4wIKXMDSoASAFQAw%3D%3D",
+            children: "General Prim"
+          }, undefined, false, undefined, this),
+          " ",
+          "for our wedding ceremony. Drinks, dinner, and celebration to follow."
+        ]
+      }, undefined, true, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
         children: "Dress code: Cocktail/Formal"
       }, undefined, false, undefined, this),
@@ -34260,8 +36012,17 @@ var TravelInformation = () => {
         children: "Passport"
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("p", {
-        children: "Mexico requires that your passport is valid upon entry to the country. For additional information, please visit the U.S. State Department's website."
-      }, undefined, false, undefined, this),
+        children: [
+          "Mexico requires that your passport is valid upon entry to the country. For additional information, please visit the Mexican government's",
+          " ",
+          /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("a", {
+            target: "_blank",
+            href: "https://consulmex.sre.gob.mx/montreal/index.php/en/foreigners/visa/355-what-documents-do-i-need-to-enter-mexico",
+            children: "website"
+          }, undefined, false, undefined, this),
+          "."
+        ]
+      }, undefined, true, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("h2", {
         children: "Travel to Mexico City"
       }, undefined, false, undefined, this),
@@ -34284,8 +36045,17 @@ var TravelInformation = () => {
         children: "Other Information"
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("p", {
-        children: "Mexico City is a wonderful city with the normal security concerns that come with large cities. The Mexico City government has some tips here."
-      }, undefined, false, undefined, this),
+        children: [
+          "Mexico City is a wonderful city with the normal security concerns that come with large cities. The Mexico City government has some tips",
+          " ",
+          /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("a", {
+            href: "https://mexicocity.cdmx.gob.mx/e/basics-for-mexico-city-travel/",
+            target: "_blank",
+            children: "here"
+          }, undefined, false, undefined, this),
+          "."
+        ]
+      }, undefined, true, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("p", {
         children: "Mexico City is at high altitude (~7,350 feet), so it is important to remain hydrated. We suggest drinking bottled water and other beverages."
       }, undefined, false, undefined, this),
