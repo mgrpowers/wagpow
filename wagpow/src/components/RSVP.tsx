@@ -1,6 +1,13 @@
 import { useState, useEffect } from "react"
 import { db } from "../firebase"
-import { collection, addDoc, doc, getDocs } from "firebase/firestore"
+import {
+	collection,
+	addDoc,
+	doc,
+	getDocs,
+	query,
+	where,
+} from "firebase/firestore"
 
 interface member {
 	name: string
@@ -22,45 +29,36 @@ export const RSVP = () => {
 	const [search, setSearch] = useState("")
 	const [family, setFamily] = useState<Family>()
 	const [error, setError] = useState("")
-	const [families, setFamilies] = useState<Family[]>([])
 
-	const getUserdetails = async () => {
-		const querySnapshot = await getDocs(collection(db, "families"))
-		const familySet: Family[] = []
-
-		querySnapshot.forEach((doc) => {
-			familySet.push(doc.data())
-		})
-
-		setFamilies(() => familySet)
-	}
-
-	useEffect(() => {
-		getUserdetails()
-	}, [])
-
-	const handleFindFamily = (e) => {
+	const handleFindFamily = async (e) => {
 		e.preventDefault()
 
-		try {
-			const family = families.find((family) => {
-				console.log("family", family)
-				return family.members.find(
-					(member) =>
-						member?.name?.toLowerCase() === search.toLowerCase()
-				)
-			})
+		const errorText = "Oops, try another name or call me: 831.325.6813"
 
-			if (family) {
-				setFamily(() => family)
+		try {
+			const familiesRef = collection(db, "families")
+			const q = query(
+				familiesRef,
+				where("members", "array-contains", {
+					name: search,
+					attending: false,
+					dietaryRestrictions: "",
+				})
+			)
+
+			const querySnapshot = await getDocs(q)
+			if (!querySnapshot.empty) {
+				const familyDoc = querySnapshot.docs[0].data()
+
+				setFamily(() => familyDoc)
 				setError("")
 				setStep(2)
 			} else {
-				setError("Oops, try again")
+				setError(errorText)
 			}
 		} catch (error) {
 			console.error("Error finding family: ", error)
-			setError("Oops, try another name or call me: 831.325.6813")
+			setError(errorText)
 		}
 	}
 
@@ -78,8 +76,6 @@ export const RSVP = () => {
 		if (updatedMember) {
 			updatedMember[key] = value
 		}
-
-		console.log("updatedFamily", updatedFamily)
 
 		setFamily(() => updatedFamily)
 	}
