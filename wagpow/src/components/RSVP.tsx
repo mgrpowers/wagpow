@@ -1,6 +1,6 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { db } from "../firebase"
-import { collection, addDoc } from "firebase/firestore"
+import { collection, addDoc, doc, getDocs } from "firebase/firestore"
 
 interface member {
 	name: string
@@ -17,72 +17,50 @@ export const Step = ({ children }: { children: React.ReactNode }) => {
 	return <div className="step">{children}</div>
 }
 
-const families = [
-	{
-		name: "McClay",
-		members: [
-			{
-				name: "Claire McClay",
-				attending: false,
-				dietaryRestrictions: "",
-			},
-			{
-				name: "Shane McClay",
-				attending: false,
-				dietaryRestrictions: "",
-			},
-			{
-				name: "Quinn McClay",
-				attending: false,
-				dietaryRestrictions: "",
-			},
-			{
-				name: "Mars McClay",
-				attending: false,
-				dietaryRestrictions: "",
-			},
-		],
-	},
-	{
-		name: "Wagman and Powers",
-		members: [
-			{
-				name: "Jillian Wagman",
-				attending: false,
-				dietaryRestrictions: "",
-			},
-			{
-				name: "Michael Powers",
-				attending: false,
-				dietaryRestrictions: "",
-			},
-		],
-	},
-]
-
 export const RSVP = () => {
 	const [step, setStep] = useState(1)
 	const [search, setSearch] = useState("")
 	const [family, setFamily] = useState<Family>()
 	const [error, setError] = useState("")
+	const [families, setFamilies] = useState<Family[]>([])
+
+	const getUserdetails = async () => {
+		const querySnapshot = await getDocs(collection(db, "families"))
+		const familySet: Family[] = []
+
+		querySnapshot.forEach((doc) => {
+			familySet.push(doc.data())
+		})
+
+		setFamilies(() => familySet)
+	}
+
+	useEffect(() => {
+		getUserdetails()
+	}, [])
 
 	const handleFindFamily = (e) => {
 		e.preventDefault()
 
-		const family = families.find((family) => {
-			return family.members.find(
-				(member) => member?.name?.toLowerCase() === search.toLowerCase()
-			)
-		})
+		try {
+			const family = families.find((family) => {
+				console.log("family", family)
+				return family.members.find(
+					(member) =>
+						member?.name?.toLowerCase() === search.toLowerCase()
+				)
+			})
 
-		console.log("family", family)
-
-		if (family) {
-			setFamily(() => family)
-			setError("")
-			setStep(2)
-		} else {
-			setError("Oops, try again")
+			if (family) {
+				setFamily(() => family)
+				setError("")
+				setStep(2)
+			} else {
+				setError("Oops, try again")
+			}
+		} catch (error) {
+			console.error("Error finding family: ", error)
+			setError("Oops, try another name or call me: 831.325.6813")
 		}
 	}
 
