@@ -37,10 +37,17 @@ export const RSVP = () => {
 
 		try {
 			const familiesRef = collection(db, "families")
+			const capitalizedName = search
+				.toLowerCase()
+				.trim()
+				.split(" ")
+				.map((n) => n[0].toUpperCase() + n.slice(1))
+				.join(" ")
+
 			const q = query(
 				familiesRef,
 				where("members", "array-contains", {
-					name: search,
+					name: capitalizedName,
 					attending: false,
 					dietaryRestrictions: "",
 				})
