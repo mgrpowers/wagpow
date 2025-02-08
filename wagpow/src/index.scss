@@ -132,17 +132,17 @@ input[type="text"] {
 button {
 	font-family: "SaveurSansRegular";
 	border-radius: 8px;
-	border: 1px solid transparent;
+	border: none;
 	padding: 0.6em 2.2em;
 	font-size: 1em;
-	background-color: #ff9408;
+	background-color: #f29388;
 	cursor: pointer;
-	transition: border-color 0.25s;
+	transition: background-color 0.25s;
 	// margin-top: 1em;
 }
 
 button:hover {
-	border-color: #646cff;
+	background-color: #f8998d;
 }
 
 button:focus,
