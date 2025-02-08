@@ -35714,13 +35714,12 @@ var RSVP = () => {
     const errorText = "Oops, try another name or call me: 831.325.6813";
     try {
       const familiesRef = collection(db, "families");
-      const capitalizedName = search.toLowerCase().trim().split(" ").map((n) => n[0].toUpperCase() + n.slice(1)).join(" ");
+      const lcName = search.toLowerCase().trim();
       const q = query(familiesRef, where("members", "array-contains", {
-        name: capitalizedName,
-        attending: false,
-        dietaryRestrictions: ""
+        name: lcName
       }));
       const querySnapshot = await getDocs(q);
+      console.log("querySnapshot", querySnapshot.empty);
       if (!querySnapshot.empty) {
         const familyDoc = querySnapshot.docs[0].data();
         setFamily(() => familyDoc);
