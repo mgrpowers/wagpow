@@ -41,6 +41,7 @@ export const RSVP = () => {
 		try {
 			const familiesRef = collection(db, "families")
 			const lcName = search
+				.replace("-", " ")
 				.toLowerCase()
 				.trim()
 				.normalize("NFD")
