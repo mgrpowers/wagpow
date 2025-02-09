@@ -40,7 +40,11 @@ export const RSVP = () => {
 
 		try {
 			const familiesRef = collection(db, "families")
-			const lcName = search.toLowerCase().trim()
+			const lcName = search
+				.toLowerCase()
+				.trim()
+				.normalize("NFD")
+				.replace(/[\u0300-\u036f]/g, "")
 
 			const q = query(
 				familiesRef,
