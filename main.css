@@ -20,8 +20,8 @@
 }
 
 a {
-  font-weight: 500;
-  color: #646cff;
+  font-weight: 300;
+  color: #fff;
   text-decoration: inherit;
 }
 
@@ -296,8 +296,10 @@ body {
   }
   h2 {
     font-size: 3em;
-    line-height: 0.2em;
-    margin-top: 2em;
+    line-height: 1em;
+  }
+  h2 {
+    font-size: 3em;
   }
   p {
     font-size: 1.6em;

@@ -35714,7 +35714,7 @@ var RSVP = () => {
     const errorText = "Oops, try another name or call me: 831.325.6813";
     try {
       const familiesRef = collection(db, "families");
-      const lcName = search.toLowerCase().trim();
+      const lcName = search.replace("-", " ").toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
       const q = query(familiesRef, where("members", "array-contains", {
         name: lcName
       }));
@@ -35792,7 +35792,7 @@ var RSVP = () => {
                   children: [
                     /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
                       children: [
-                        /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("h2", {
+                        /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("h3", {
                           children: member.name
                         }, undefined, false, undefined, this),
                         /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
