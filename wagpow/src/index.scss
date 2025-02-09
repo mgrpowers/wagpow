@@ -27,8 +27,9 @@ $secondary: #5f7a8a;
 }
 
 a {
-	font-weight: 500;
-	color: #646cff;
+	font-weight: 300;
+	// color: #1b365c;
+	color: #fff;
 	text-decoration: inherit;
 }
 a:hover {
@@ -336,8 +337,12 @@ body {
 
 	h2 {
 		font-size: 3em;
-		line-height: 0.2em;
-		margin-top: 2em;
+		line-height: 1em;
+		// margin-top: 2em;
+	}
+
+	h2 {
+		font-size: 3em;
 	}
 
 	p {

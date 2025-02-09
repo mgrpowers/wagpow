@@ -129,7 +129,7 @@ export const RSVP = () => {
 									key={member.name}
 								>
 									<div>
-										<h2>{member.name}</h2>
+										<h3>{member.name}</h3>
 										<div>
 											<input
 												disabled={!member.attending}
