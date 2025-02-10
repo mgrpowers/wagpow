@@ -23843,7 +23843,8 @@ var useAuth = () => {
 
 // src/components/Section.tsx
 var jsx_dev_runtime = __toESM(require_jsx_dev_runtime(), 1);
-var Section = ({ children }) => /* @__PURE__ */ jsx_dev_runtime.jsxDEV("section", {
+var Section = ({ children, id }) => /* @__PURE__ */ jsx_dev_runtime.jsxDEV("section", {
+  id,
   className: "section",
   children
 }, undefined, false, undefined, this);
@@ -35705,7 +35706,8 @@ var Step = ({ children }) => {
   }, undefined, false, undefined, this);
 };
 var RSVP = () => {
-  const [step, setStep] = import_react3.useState(1);
+  const rsvp = localStorage.getItem("rsvp");
+  const [step, setStep] = import_react3.useState(rsvp ? 3 : 1);
   const [search, setSearch] = import_react3.useState("");
   const [family, setFamily] = import_react3.useState();
   const [error, setError] = import_react3.useState("");
@@ -35748,12 +35750,10 @@ var RSVP = () => {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setStep(3);
-    console.log("submitted", family);
     try {
       await addDoc(collection(db, "rsvps"), family);
       setStep(3);
-      console.log("submitted", family);
+      localStorage.setItem("rsvp", "true");
     } catch (error2) {
       console.error("Error adding document: ", error2);
       setError("Failed to submit RSVP. Please try again.");
@@ -35772,7 +35772,7 @@ var RSVP = () => {
       }, undefined, false, undefined, this),
       step === 3 && /* @__PURE__ */ jsx_dev_runtime3.jsxDEV(Step, {
         children: /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("h2", {
-          children: "Thank you for RSVPing!"
+          children: "Thank you for RSVPing! Please let us know if you'd like to make any changes."
         }, undefined, false, undefined, this)
       }, undefined, false, undefined, this),
       step === 2 && family && /* @__PURE__ */ jsx_dev_runtime3.jsxDEV(Step, {
@@ -36060,27 +36060,48 @@ var TravelInformation = () => {
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("p", {
         children: "In August, the average daytime temperature is in the upper 70˚s and the evenings are in the 50˚s."
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("h2", {
+        children: "Things to Do"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("p", {
+        children: "Please check back as we get closer to the event for restaurant and activity suggestions."
       }, undefined, false, undefined, this)
     ]
   }, undefined, true, undefined, this);
 };
 // src/components/ThingsToDo.tsx
 var jsx_dev_runtime7 = __toESM(require_jsx_dev_runtime(), 1);
-var ThingsToDo = () => {
-  return /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
-    className: "wp-content",
+// src/App.tsx
+var jsx_dev_runtime8 = __toESM(require_jsx_dev_runtime(), 1);
+var Nav = () => {
+  return /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("div", {
+    className: "wp-navbar",
     children: [
-      /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("h2", {
-        children: "Things to Do"
+      /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("a", {
+        href: "#home",
+        className: "[&.active]:font-bold",
+        children: "J + M"
       }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("p", {
-        children: "Please check back as we get closer to the event for restaurant and activity suggestions."
+      " ",
+      /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("a", {
+        href: "#rsvp",
+        className: "[&.active]:font-bold",
+        children: "RSVP"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("a", {
+        href: "#schedule",
+        className: "[&.active]:font-bold",
+        children: "Schedule"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("a", {
+        href: "#travel",
+        className: "[&.active]:font-bold",
+        children: "Travel Information"
       }, undefined, false, undefined, this)
     ]
   }, undefined, true, undefined, this);
 };
-// src/App.tsx
-var jsx_dev_runtime8 = __toESM(require_jsx_dev_runtime(), 1);
 function App() {
   const { authenticated } = useAppStore();
   if (!authenticated) {
@@ -36088,20 +36109,22 @@ function App() {
   }
   return /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(jsx_dev_runtime8.Fragment, {
     children: [
+      /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(Nav, {}, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(Section, {
+        id: "home",
         children: /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(Home, {}, undefined, false, undefined, this)
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(Section, {
+        id: "rsvp",
         children: /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(RSVP, {}, undefined, false, undefined, this)
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(Section, {
+        id: "schedule",
         children: /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(Schedule, {}, undefined, false, undefined, this)
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(Section, {
+        id: "travel",
         children: /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(TravelInformation, {}, undefined, false, undefined, this)
-      }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(Section, {
-        children: /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(ThingsToDo, {}, undefined, false, undefined, this)
       }, undefined, false, undefined, this)
     ]
   }, undefined, true, undefined, this);
