@@ -1,3 +1,5 @@
-export const Section = ({ children }) => (
-	<section className="section">{children}</section>
+export const Section = ({ children, id }) => (
+	<section id={id} className="section">
+		{children}
+	</section>
 )

@@ -11,6 +11,10 @@
 $main: #5c7685;
 $secondary: #5f7a8a;
 
+html {
+	scroll-behavior: smooth;
+}
+
 :root {
 	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 	line-height: 1.5;
@@ -28,17 +32,12 @@ $secondary: #5f7a8a;
 
 a {
 	font-weight: 300;
-	// color: #1b365c;
 	color: #fff;
 	text-decoration: inherit;
 }
 a:hover {
-	color: #535bf2;
+	color: #fff;
 }
-
-// body {
-// 	margin: 0;
-// }
 
 h1 {
 	font-size: 2em;
@@ -69,6 +68,17 @@ p {
 	color: #fff;
 	opacity: 0.7;
 	text-align: center;
+}
+
+.wp-navbar {
+	height: 50px;
+	position: sticky;
+	top: calc(100% - 50px);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 1em;
+	background-color: #5c7685;
 }
 
 @media (prefers-color-scheme: light) {
@@ -249,8 +259,12 @@ body {
 		transform: translateY(-50%);
 		background-color: #fff;
 		width: 100%;
-		height: 3px;
+		height: 2px;
 		margin: 1em;
+	}
+
+	h2 {
+		margin: 0.7em 0;
 	}
 }
 

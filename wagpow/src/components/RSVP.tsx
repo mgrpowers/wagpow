@@ -1,15 +1,6 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { db } from "../firebase"
-import {
-	collection,
-	addDoc,
-	doc,
-	getDocs,
-	query,
-	where,
-} from "firebase/firestore"
-
-import familes from "../assets/familes.json"
+import { collection, addDoc, getDocs, query, where } from "firebase/firestore"
 
 interface member {
 	name: string
@@ -28,7 +19,8 @@ export const Step = ({ children }: { children: React.ReactNode }) => {
 }
 
 export const RSVP = () => {
-	const [step, setStep] = useState(1)
+	const rsvp = localStorage.getItem("rsvp")
+	const [step, setStep] = useState(rsvp ? 3 : 1)
 	const [search, setSearch] = useState("")
 	const [family, setFamily] = useState<Family>()
 	const [error, setError] = useState("")
@@ -98,14 +90,10 @@ export const RSVP = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault()
 
-		setStep(3)
-		console.log("submitted", family)
-
-		// submit to firebase
 		try {
 			await addDoc(collection(db, "rsvps"), family)
 			setStep(3)
-			console.log("submitted", family)
+			localStorage.setItem("rsvp", "true")
 		} catch (error) {
 			console.error("Error adding document: ", error)
 			setError("Failed to submit RSVP. Please try again.")
@@ -120,7 +108,10 @@ export const RSVP = () => {
 			{error && <p className="wp-error">{error}</p>}
 			{step === 3 && (
 				<Step>
-					<h2>Thank you for RSVPing!</h2>
+					<h2>
+						Thank you for RSVPing! Please let us know if you'd like
+						to make any changes.
+					</h2>
 				</Step>
 			)}
 			{step === 2 && family && (
