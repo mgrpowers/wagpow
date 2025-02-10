@@ -35991,9 +35991,6 @@ var Schedule = () => {
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
         children: "Please join us for a post-wedding brunch"
-      }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
-        children: "If you plan to spend extra days in Mexico City, we will add additional optional events as we get closer to the wedding."
       }, undefined, false, undefined, this)
     ]
   }, undefined, true, undefined, this);
@@ -36061,6 +36058,7 @@ var TravelInformation = () => {
       /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("p", {
         children: "In August, the average daytime temperature is in the upper 70˚s and the evenings are in the 50˚s."
       }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("hr", {}, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("h2", {
         children: "Things to Do"
       }, undefined, false, undefined, this),

@@ -112,6 +112,7 @@ section:first-child {
 }
 section:last-child {
   margin-bottom: 0;
+  padding-bottom: 10em;
 }
 
 input {
@@ -306,7 +307,7 @@ body {
 
 @media screen and (min-width: 960px) {
   h1 {
-    font-size: 8em;
+    font-size: 6em;
     line-height: 1em;
     font-family: "SaveurSansRegular";
     padding: 0;
