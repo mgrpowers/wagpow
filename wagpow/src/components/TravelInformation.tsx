@@ -81,6 +81,7 @@ export const TravelInformation = () => {
 				In August, the average daytime temperature is in the upper 70˚s
 				and the evenings are in the 50˚s.
 			</p>
+			<hr />
 			<h2>Things to Do</h2>
 			<p>
 				Please check back as we get closer to the event for restaurant
