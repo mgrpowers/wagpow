@@ -31,9 +31,9 @@ function App() {
 			<Section>
 				<TravelInformation />
 			</Section>
-			<Section>
+			{/* <Section>
 				<ThingsToDo />
-			</Section>
+			</Section> */}
 		</>
 	)
 }
