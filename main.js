@@ -36064,6 +36064,23 @@ var TravelInformation = () => {
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("p", {
         children: "Please check back as we get closer to the event for restaurant and activity suggestions."
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("hr", {}, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("h2", {
+        children: "Things to Do"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("p", {
+        children: 'We appreciate the effort required to join us in Mexico City to celebrate our wedding. If it is important to you, please consider donating to the Institute for Women in Migration ("IMUMI"), where Jillian worked for two years while living in Mexico City. IMUMI supports women migrants and their families by providing legal assistance and advocating for better immigration policies on both sides of the border. IMUMI has adapted and expanded to respond to the changing immigration landscape, providing competent and compassionate legal advice to migrants and their families in the region.'
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("p", {
+        children: "Money donated to IMUMI in honor of our wedding will be specifically directed to fund legal representation for women and families seeking asylum in Mexico. Some of the money will also be used to provide dignity kits for families who have been deported from the United States to help them start rebuilding their lives in Mexico."
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("p", {
+        children: /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("a", {
+          href: "https://www.paypal.com/donate/?hosted_button_id=UYKE5HN8L3Z22",
+          target: "_blank",
+          children: "You can make a donation here"
+        }, undefined, false, undefined, this)
       }, undefined, false, undefined, this)
     ]
   }, undefined, true, undefined, this);

@@ -87,6 +87,36 @@ export const TravelInformation = () => {
 				Please check back as we get closer to the event for restaurant
 				and activity suggestions.
 			</p>
+			<hr />
+			<h2>Things to Do</h2>
+			<p>
+				We appreciate the effort required to join us in Mexico City to
+				celebrate our wedding. If it is important to you, please
+				consider donating to the Institute for Women in Migration
+				("IMUMI"), where Jillian worked for two years while living in
+				Mexico City. IMUMI supports women migrants and their families by
+				providing legal assistance and advocating for better immigration
+				policies on both sides of the border. IMUMI has adapted and
+				expanded to respond to the changing immigration landscape,
+				providing competent and compassionate legal advice to migrants
+				and their families in the region.
+			</p>
+			<p>
+				Money donated to IMUMI in honor of our wedding will be
+				specifically directed to fund legal representation for women and
+				families seeking asylum in Mexico. Some of the money will also
+				be used to provide dignity kits for families who have been
+				deported from the United States to help them start rebuilding
+				their lives in Mexico.
+			</p>
+			<p>
+				<a
+					href="https://www.paypal.com/donate/?hosted_button_id=UYKE5HN8L3Z22"
+					target="_blank"
+				>
+					You can make a donation here
+				</a>
+			</p>
 		</div>
 	)
 }
