@@ -1,22 +1,3 @@
-// "Passport
-// Mexico requires that your passport is valid upon entry to the country. For additional information, please visit the Mexican government's website.
-
-// Travel to Mexico City
-// We suggest flying into Mexico City's main airport, Mexico City International Airport Benito Juárez (airport code MEX). The other airports that may show up when searching for flights are far outside the city.
-
-// Travel within Mexico City
-// We suggest using ridesharing applications (we use Uber) to travel from the airport to your accommodations. We DO NOT recommend renting a car, as the roads can be difficult and parking is complicated. Once you are at your accommodations, Mexico City is walkable, public transit is reliable, and ridesharing cars are plentiful.
-
-// Accommodations
-// We lived in the Condesa neighborhood when we lived in Mexico City, and we recommend our guests stay in either the Condesa or Roma neighborhoods. There are lots of lovely smaller hotels in the neighborhood that have a lot of character. Please ask us if you have questions about specific hotels or neighborhoods. Please check back for more information.
-
-// Other Information
-// Mexico City is a wonderful city with the normal security concerns that come with large cities. The Mexico City government has some tips here.
-
-// Mexico City is at high altitude (~7,350 feet), so it is important to remain hydrated. We suggest drinking bottled water and other beverages.
-
-// In August, the average daytime temperature is in the upper 70˚s and the evenings are in the 50˚s."
-
 export const TravelInformation = () => {
 	return (
 		<div className="wp-content">
@@ -88,7 +69,7 @@ export const TravelInformation = () => {
 				and activity suggestions.
 			</p>
 			<hr />
-			<h2>Things to Do</h2>
+			<h2>Registry</h2>
 			<p>
 				We appreciate the effort required to join us in Mexico City to
 				celebrate our wedding. If it is important to you, please
@@ -114,7 +95,7 @@ export const TravelInformation = () => {
 					href="https://www.paypal.com/donate/?hosted_button_id=UYKE5HN8L3Z22"
 					target="_blank"
 				>
-					You can make a donation here
+					You can make a donation here.
 				</a>
 			</p>
 		</div>
