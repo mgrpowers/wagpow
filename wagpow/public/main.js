@@ -35764,7 +35764,7 @@ var RSVP = () => {
     children: [
       step !== 3 && /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("h2", {
         className: "wp-title",
-        children: "Please RSVP by May 1, 2025"
+        children: "Please RSVP by July 1, 2025"
       }, undefined, false, undefined, this),
       error && /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("p", {
         className: "wp-error",
