@@ -103,7 +103,7 @@ export const RSVP = () => {
 	return (
 		<div className="hero wp-rsvp wp-content">
 			{step !== 3 && (
-				<h2 className="wp-title">Please RSVP by May 1, 2025</h2>
+				<h2 className="wp-title">Please RSVP by July 1, 2025</h2>
 			)}
 			{error && <p className="wp-error">{error}</p>}
 			{step === 3 && (
