@@ -25,6 +25,9 @@ const Nav = () => {
 			<a href="#travel" className="[&.active]:font-bold">
 				Travel Information
 			</a>
+			<a href="#things-to-do" className="[&.active]:font-bold">
+				Things To Do
+			</a>
 		</div>
 	)
 }
@@ -51,9 +54,9 @@ function App() {
 			<Section id="travel">
 				<TravelInformation />
 			</Section>
-			{/* <Section>
+			<Section id={"things-to-do"}>
 				<ThingsToDo />
-			</Section> */}
+			</Section>
 		</>
 	)
 }

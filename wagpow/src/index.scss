@@ -102,7 +102,7 @@ body {
 	padding: 0;
 }
 
-section {
+.wp-section {
 	margin: 10em 0;
 	display: flex;
 	place-items: center;
@@ -414,5 +414,53 @@ body {
 
 	.rsvp-form-row {
 		width: 100%;
+	}
+}
+
+.things-to-do {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 2rem;
+
+	.activity-section {
+		margin: 2rem 0;
+	}
+
+	.activity-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		gap: 1.5rem;
+	}
+
+	.activity-card {
+		background: #658194;
+		border-radius: 8px;
+		padding: 1.5rem;
+		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		transition: transform 0.2s ease;
+
+		&:hover {
+			transform: translateY(-2px);
+		}
+
+		h4 {
+			margin-bottom: 0.5rem;
+		}
+
+		p {
+			margin-bottom: 1rem;
+		}
+
+		a {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.5rem;
+			color: var(--color-primary);
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
 	}
 }
