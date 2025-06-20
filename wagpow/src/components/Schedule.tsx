@@ -26,10 +26,6 @@ export const Schedule = () => {
 			<h2>Sunday, August 10, 2025</h2>
 			<p>Post-wedding brunch</p>
 			<p>Please join us for a post-wedding brunch</p>
-			{/* <p>
-				If you plan to spend extra days in Mexico City, we will add
-				additional optional events as we get closer to the wedding.
-			</p> */}
 		</div>
 	)
 }

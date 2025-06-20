@@ -1,10 +1,11 @@
+import React from "react"
 import { MapPin } from "lucide-react"
 
 interface Activity {
 	name: string
 	description?: string
 	mapLink?: string
-	link?: string
+	link?: string | string[]
 }
 
 interface ActivitySection {
@@ -30,7 +31,10 @@ const activities: ActivitySection[] = [
 				name: "Soumaya and Jumex Museums",
 				description: "Next to each other!",
 				mapLink: "https://maps.app.goo.gl/MZjChfm3mbWA38AdA",
-				link: "https://www.museosoumaya.org/ AND https://www.fundacionjumex.org/en",
+				link: [
+					"https://www.museosoumaya.org/",
+					"https://www.fundacionjumex.org/en",
+				],
 			},
 			{
 				name: "Frida Kahlo Museum",
@@ -59,7 +63,10 @@ const activities: ActivitySection[] = [
 			{
 				name: "Chapultepec Castle and walk around the Park",
 				mapLink: "https://maps.app.goo.gl/wz3u4Ahzbv55c4KSA",
-				link: "https://mnh.inah.gob.mx/home-en AND https://mexicocity.cdmx.gob.mx/locations/chapultepec-park/",
+				link: [
+					"https://mnh.inah.gob.mx/home-en",
+					"https://mexicocity.cdmx.gob.mx/locations/chapultepec-park/",
+				],
 			},
 			{
 				name: "Visit the Vasconcelos library",
@@ -70,7 +77,10 @@ const activities: ActivitySection[] = [
 				name: "Day trip to Teotihuacan",
 				description: "Eat lunch at La Gruta",
 				mapLink: "https://maps.app.goo.gl/BoVPPdXu2Lb7yrS18",
-				link: "https://inah.gob.mx/zonas/23-zona-arqueologica-de-teotihuacan AND https://www.lagruta.mx/index_en.php",
+				link: [
+					"https://inah.gob.mx/zonas/23-zona-arqueologica-de-teotihuacan",
+					"https://www.lagruta.mx/index_en.php",
+				],
 			},
 			{
 				name: "Day trip to Xochimilco",
@@ -88,7 +98,10 @@ const activities: ActivitySection[] = [
 				name: "Parque México and Avenida Amsterdam",
 				description: "Perfect for a relaxing stroll",
 				mapLink: "https://maps.app.goo.gl/7LvgdtVRQmFE1n9T8",
-				link: "https://mexicocity.cdmx.gob.mx/venues/parque-mexico/ AND https://mexicocity.cdmx.gob.mx/venues/avenida-amsterdam/",
+				link: [
+					"https://mexicocity.cdmx.gob.mx/venues/parque-mexico/",
+					"https://mexicocity.cdmx.gob.mx/venues/avenida-amsterdam/",
+				],
 			},
 			{
 				name: "Roma Norte Boutiques",
@@ -145,7 +158,7 @@ const activities: ActivitySection[] = [
 		],
 	},
 	{
-		title: "Morning Food",
+		title: "Breakfast",
 		items: [
 			{
 				name: "La Esquina del Chilaquil",
@@ -168,7 +181,7 @@ const activities: ActivitySection[] = [
 		],
 	},
 	{
-		title: "Midday Food",
+		title: "Lunch",
 		items: [
 			{
 				name: "Tacos Hola",
@@ -204,7 +217,7 @@ const activities: ActivitySection[] = [
 		],
 	},
 	{
-		title: "Evening Food",
+		title: "Dinner",
 		items: [
 			{
 				name: "Por Siempre Vegana 2",
@@ -269,11 +282,43 @@ const activities: ActivitySection[] = [
 const ActivityCard = ({ name, description, mapLink, link }: Activity) => (
 	<div className="activity-card">
 		<h3>
-			<a href={link} target="_blank" rel="noopener noreferrer">
-				{name}
-			</a>
+			{typeof link === "object" ? (
+				<>
+					{name.split("and").map((part, i) => (
+						<a
+							key={i}
+							href={link[i]}
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							{part}
+						</a>
+					))}
+
+					{/* <a
+						href={link?.[1]}
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						add'l
+					</a> */}
+				</>
+			) : (
+				<a href={link} target="_blank" rel="noopener noreferrer">
+					{name}
+				</a>
+			)}
 		</h3>
-		{description && <p>{description}</p>}
+		{description && (
+			<p>
+				{description.split("\n").map((line, i) => (
+					<React.Fragment key={i}>
+						{line}
+						{i < description.split("\n").length - 1 && <br />}
+					</React.Fragment>
+				))}
+			</p>
+		)}
 		{mapLink && (
 			<a href={mapLink} target="_blank" rel="noopener noreferrer">
 				<MapPin size={16} /> View Map

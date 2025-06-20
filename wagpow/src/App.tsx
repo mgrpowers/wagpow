@@ -23,7 +23,7 @@ const Nav = () => {
 				Schedule
 			</a>
 			<a href="#travel" className="[&.active]:font-bold">
-				Travel Information
+				Travel
 			</a>
 			<a href="#things-to-do" className="[&.active]:font-bold">
 				Things To Do
