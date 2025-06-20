@@ -23683,7 +23683,7 @@ var require_jsx_dev_runtime = __commonJS((exports, module) => {
 });
 
 // src/main.tsx
-var import_react4 = __toESM(require_react(), 1);
+var import_react6 = __toESM(require_react(), 1);
 var import_client = __toESM(require_client(), 1);
 // src/hooks/useAuth.tsx
 var import_react2 = __toESM(require_react(), 1);
@@ -23845,7 +23845,7 @@ var useAuth = () => {
 var jsx_dev_runtime = __toESM(require_jsx_dev_runtime(), 1);
 var Section = ({ children, id }) => /* @__PURE__ */ jsx_dev_runtime.jsxDEV("section", {
   id,
-  className: "section",
+  className: "wp-section",
   children
 }, undefined, false, undefined, this);
 
@@ -36085,8 +36085,389 @@ var TravelInformation = () => {
     ]
   }, undefined, true, undefined, this);
 };
+// node_modules/lucide-react/dist/esm/createLucideIcon.js
+var import_react5 = __toESM(require_react(), 1);
+
+// node_modules/lucide-react/dist/esm/shared/src/utils.js
+var toKebabCase = (string) => string.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
+var toCamelCase = (string) => string.replace(/^([A-Z])|[\s-_]+(\w)/g, (match, p1, p2) => p2 ? p2.toUpperCase() : p1.toLowerCase());
+var toPascalCase = (string) => {
+  const camelCase = toCamelCase(string);
+  return camelCase.charAt(0).toUpperCase() + camelCase.slice(1);
+};
+var mergeClasses = (...classes) => classes.filter((className, index, array) => {
+  return Boolean(className) && className.trim() !== "" && array.indexOf(className) === index;
+}).join(" ").trim();
+var hasA11yProp = (props) => {
+  for (const prop in props) {
+    if (prop.startsWith("aria-") || prop === "role" || prop === "title") {
+      return true;
+    }
+  }
+};
+
+// node_modules/lucide-react/dist/esm/Icon.js
+var import_react4 = __toESM(require_react(), 1);
+
+// node_modules/lucide-react/dist/esm/defaultAttributes.js
+var defaultAttributes = {
+  xmlns: "http://www.w3.org/2000/svg",
+  width: 24,
+  height: 24,
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 2,
+  strokeLinecap: "round",
+  strokeLinejoin: "round"
+};
+
+// node_modules/lucide-react/dist/esm/Icon.js
+var Icon = import_react4.forwardRef(({
+  color = "currentColor",
+  size = 24,
+  strokeWidth = 2,
+  absoluteStrokeWidth,
+  className = "",
+  children,
+  iconNode,
+  ...rest
+}, ref) => import_react4.createElement("svg", {
+  ref,
+  ...defaultAttributes,
+  width: size,
+  height: size,
+  stroke: color,
+  strokeWidth: absoluteStrokeWidth ? Number(strokeWidth) * 24 / Number(size) : strokeWidth,
+  className: mergeClasses("lucide", className),
+  ...!children && !hasA11yProp(rest) && { "aria-hidden": "true" },
+  ...rest
+}, [
+  ...iconNode.map(([tag, attrs]) => import_react4.createElement(tag, attrs)),
+  ...Array.isArray(children) ? children : [children]
+]));
+
+// node_modules/lucide-react/dist/esm/createLucideIcon.js
+var createLucideIcon = (iconName, iconNode) => {
+  const Component2 = import_react5.forwardRef(({ className, ...props }, ref) => import_react5.createElement(Icon, {
+    ref,
+    iconNode,
+    className: mergeClasses(`lucide-${toKebabCase(toPascalCase(iconName))}`, `lucide-${iconName}`, className),
+    ...props
+  }));
+  Component2.displayName = toPascalCase(iconName);
+  return Component2;
+};
+
+// node_modules/lucide-react/dist/esm/icons/map-pin.js
+var __iconNode = [
+  [
+    "path",
+    {
+      d: "M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0",
+      key: "1r0f0z"
+    }
+  ],
+  ["circle", { cx: "12", cy: "10", r: "3", key: "ilqhr7" }]
+];
+var MapPin = createLucideIcon("map-pin", __iconNode);
 // src/components/ThingsToDo.tsx
 var jsx_dev_runtime7 = __toESM(require_jsx_dev_runtime(), 1);
+var activities = [
+  {
+    title: "Museums",
+    items: [
+      {
+        name: "Bellas Artes",
+        mapLink: "https://maps.app.goo.gl/HpTcb9nNiBD4DQT36",
+        link: "https://palacio.inba.gob.mx/"
+      },
+      {
+        name: "Anthropology Museum",
+        mapLink: "https://maps.app.goo.gl/XpUdudPwJBJMqeRL6",
+        link: "https://www.mna.inah.gob.mx/"
+      },
+      {
+        name: "Soumaya and Jumex Museums",
+        description: "Next to each other!",
+        mapLink: "https://maps.app.goo.gl/MZjChfm3mbWA38AdA",
+        link: "https://www.museosoumaya.org/ AND https://www.fundacionjumex.org/en"
+      },
+      {
+        name: "Frida Kahlo Museum",
+        description: "Reservations required. Pair this visit with a walk around Coyoacan",
+        mapLink: "https://maps.app.goo.gl/jkMfduEuXU9F5wic8",
+        link: "https://www.museofridakahlo.org.mx/?lang=en"
+      },
+      {
+        name: "Tamayo Museum",
+        mapLink: "https://maps.app.goo.gl/GEpvLRhbauC1SvNZ7",
+        link: "https://www.museotamayo.org/en"
+      },
+      {
+        name: "Templo Mayor Museum",
+        description: "If you are unable to make a trip to Teotihuacan, this is a way to see ruins without leaving the city. Pair this with a walk around the Zocalo and the historic center.",
+        mapLink: "https://maps.app.goo.gl/YJDbM6YsB5vrSaGf6",
+        link: "https://www.templomayor.inah.gob.mx/english"
+      }
+    ]
+  },
+  {
+    title: "Activities",
+    items: [
+      {
+        name: "Chapultepec Castle and walk around the Park",
+        mapLink: "https://maps.app.goo.gl/wz3u4Ahzbv55c4KSA",
+        link: "https://mnh.inah.gob.mx/home-en AND https://mexicocity.cdmx.gob.mx/locations/chapultepec-park/"
+      },
+      {
+        name: "Visit the Vasconcelos library",
+        mapLink: "https://maps.app.goo.gl/5WuiXyrV9TQ97VQH8",
+        link: "https://www.bibliotecavasconcelos.gob.mx/"
+      },
+      {
+        name: "Day trip to Teotihuacan",
+        description: "Eat lunch at La Gruta",
+        mapLink: "https://maps.app.goo.gl/BoVPPdXu2Lb7yrS18",
+        link: "https://inah.gob.mx/zonas/23-zona-arqueologica-de-teotihuacan AND https://www.lagruta.mx/index_en.php"
+      },
+      {
+        name: "Day trip to Xochimilco",
+        description: "Take a ride on a colorful boat—pair up with a group and bring snacks and drinks for a multi-hour ride around the chinampas",
+        mapLink: "https://maps.app.goo.gl/ZRoeeV7ckbXuQRsDA",
+        link: "https://mexicocity.cdmx.gob.mx/venues/xochimilco-ecological-park/"
+      }
+    ]
+  },
+  {
+    title: "Places to Wander",
+    items: [
+      {
+        name: "Parque México and Avenida Amsterdam",
+        description: "Perfect for a relaxing stroll",
+        mapLink: "https://maps.app.goo.gl/7LvgdtVRQmFE1n9T8",
+        link: "https://mexicocity.cdmx.gob.mx/venues/parque-mexico/ AND https://mexicocity.cdmx.gob.mx/venues/avenida-amsterdam/"
+      },
+      {
+        name: "Roma Norte Boutiques",
+        description: "Explore the trendy shopping district",
+        mapLink: "https://maps.app.goo.gl/HMDsGgMew9xZE8os9"
+      },
+      {
+        name: "Zocalo and Historic Center",
+        description: "The heart of Mexico City",
+        mapLink: "https://maps.app.goo.gl/yLt5qnskYy8aMqj29",
+        link: "https://mexicocity.cdmx.gob.mx/tag/zocalo-area/"
+      },
+      {
+        name: "Coyoacan Neighborhoods",
+        description: "Beautiful tree-lined streets",
+        mapLink: "https://maps.app.goo.gl/uB4WdqxdzCvRx2ZY9",
+        link: "https://mexicocity.cdmx.gob.mx/tag/centro-de-coyoacan/"
+      },
+      {
+        name: "Muevete en Bici",
+        description: "Sunday biking from 8:00 to 2:00 - roads are closed to cars",
+        mapLink: "https://www.semovi.cdmx.gob.mx/tramites-y-servicios/mi-bici/muevete-en-bici",
+        link: "https://www.semovi.cdmx.gob.mx/tramites-y-servicios/mi-bici/muevete-en-bici"
+      }
+    ]
+  },
+  {
+    title: "Souvenirs",
+    items: [
+      {
+        name: "FONART Store",
+        description: "Multiple locations available",
+        link: "https://www.gob.mx/fonart?tab=tienda"
+      },
+      {
+        name: "Ciudadela Market",
+        mapLink: "https://maps.app.goo.gl/BieGy16SeZUJYiqdA",
+        link: "https://mexicocity.cdmx.gob.mx/venues/la-ciudadela-artisan-market/?lang=es"
+      },
+      {
+        name: "Bazar Sábado",
+        description: "Located in San Ángel, open on Saturdays",
+        mapLink: "https://maps.app.goo.gl/K2grbUXVwjYNFSNAA"
+      }
+    ]
+  },
+  {
+    title: "Morning Food",
+    items: [
+      {
+        name: "La Esquina del Chilaquil",
+        description: `Mike: torta de chilaquiles with pechuga and salsa verde
+Jillian: torta de chilaquiles campechana, no meat
+Tip: Buy coffee elsewhere, arrive early and expect to wait`,
+        mapLink: "https://maps.app.goo.gl/fq8XaPa1FverNzi59"
+      },
+      {
+        name: "Panadería Rosetta",
+        description: `Mike: guava roll
+Jillian: tarragon roll`,
+        mapLink: "https://maps.app.goo.gl/iZWWYiVjWPmzqGPy5",
+        link: "https://www.instagram.com/panaderiarosetta/?hl=en"
+      },
+      {
+        name: "Molino El Pujol",
+        description: `Mike: café de olla
+Jillian: avocado taco`,
+        mapLink: "https://maps.app.goo.gl/QBY9vVhBVVQwYwdt5",
+        link: "https://pujol.com.mx/eng/molino-el-pujol/"
+      }
+    ]
+  },
+  {
+    title: "Midday Food",
+    items: [
+      {
+        name: "Tacos Hola",
+        description: `Mike: torta de coliflor
+Jillian: quelites`,
+        mapLink: "https://maps.app.goo.gl/SpfCurqybUCfBsyg9",
+        link: "https://www.instagram.com/tacosholaelguero/?hl=en"
+      },
+      {
+        name: "Tlacoyos Medellin",
+        description: `Mike: tlacoyo de frijol with everything and green salsa
+Jillian: tlacoyo de habas with everything and red salsa`,
+        mapLink: "https://maps.app.goo.gl/KPJqYfUUPnk9Qkwx5"
+      },
+      {
+        name: "Tortas La Moderna",
+        description: `Mike: torta de salchicha
+Jillian: torta de tres quesos`,
+        mapLink: "https://maps.app.goo.gl/WEUajfkGy5yyu7sU6"
+      },
+      {
+        name: "El Hidalguense",
+        description: `Mike: barbacoa and consomé
+Jillian: quesadilla de flor de calabaza`,
+        mapLink: "https://maps.app.goo.gl/ARg7x9YoTSzAr62m6"
+      },
+      {
+        name: "Contramar",
+        description: `Mike: pescado a la talla Contramar
+Jillian: sope sencillo`,
+        mapLink: "https://maps.app.goo.gl/BMzM7maUnhRnTAmt5",
+        link: "http://www.contramar.com.mx/english.html"
+      }
+    ]
+  },
+  {
+    title: "Evening Food",
+    items: [
+      {
+        name: "Por Siempre Vegana 2",
+        description: "Both: vegan pastor tacos with pineapple and onion",
+        mapLink: "https://maps.app.goo.gl/tTjqxpfB9Wihc4wQ7",
+        link: "https://www.instagram.com/por_siempre_vegana_taqueria/?hl=en"
+      },
+      {
+        name: "Taquería Orinoco",
+        description: `Mike: costra de pastor
+Jillian: quesadilla
+Multiple locations available`,
+        mapLink: "",
+        link: "https://taqueriaorinoco.com/"
+      },
+      {
+        name: "Restaurante Rosetta",
+        description: `Mike: gnocchi
+Jillian: pasta and fresh herbs with rosemary ice cream`,
+        mapLink: "https://maps.app.goo.gl/kBSnqBCSn1s2hwQ16",
+        link: "https://rosetta.com.mx/en/"
+      },
+      {
+        name: "Galanga Thai House",
+        description: "Excellent Thai food in a beautiful setting",
+        mapLink: "https://maps.app.goo.gl/aEhdY4L55XzKwbEu7"
+      }
+    ]
+  },
+  {
+    title: "Drinks",
+    items: [
+      {
+        name: "Baltra",
+        description: "Interesting cocktail bar",
+        mapLink: "https://maps.app.goo.gl/4TMiyxXmLas8g4T39",
+        link: "https://baltra.bar/"
+      },
+      {
+        name: "Meroma",
+        description: "Great for snacks and drinks",
+        mapLink: "https://maps.app.goo.gl/JZj47Z58cZzZ6c1K9",
+        link: "https://meroma.mx/"
+      },
+      {
+        name: "La Clandestina",
+        description: "Mezcal bar",
+        mapLink: "https://maps.app.goo.gl/29NwGoqPAGX7hjJZ8",
+        link: "https://laclandestina.mx/en/"
+      },
+      {
+        name: "El Palenquito",
+        description: "Mezcal bar",
+        mapLink: "https://maps.app.goo.gl/mKTyV19EAHNhWBav7",
+        link: "https://elpalenquito.com/"
+      }
+    ]
+  }
+];
+var ActivityCard = ({ name: name3, description, mapLink, link }) => /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+  className: "activity-card",
+  children: [
+    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("h3", {
+      children: /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("a", {
+        href: link,
+        target: "_blank",
+        rel: "noopener noreferrer",
+        children: name3
+      }, undefined, false, undefined, this)
+    }, undefined, false, undefined, this),
+    description && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("p", {
+      children: description
+    }, undefined, false, undefined, this),
+    mapLink && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("a", {
+      href: mapLink,
+      target: "_blank",
+      rel: "noopener noreferrer",
+      children: [
+        /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(MapPin, {
+          size: 16
+        }, undefined, false, undefined, this),
+        " View Map"
+      ]
+    }, undefined, true, undefined, this)
+  ]
+}, undefined, true, undefined, this);
+var ThingsToDo = () => {
+  return /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+    className: "wp-content things-to-do",
+    children: [
+      /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("h2", {
+        children: "Things to Do in Mexico City"
+      }, undefined, false, undefined, this),
+      activities.map((section) => /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("section", {
+        className: "activity-section",
+        children: [
+          /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("h2", {
+            children: section.title
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+            className: "activity-grid",
+            children: section.items.map((activity) => /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(ActivityCard, {
+              ...activity
+            }, activity.name, false, undefined, this))
+          }, undefined, false, undefined, this)
+        ]
+      }, section.title, true, undefined, this))
+    ]
+  }, undefined, true, undefined, this);
+};
 // src/App.tsx
 var jsx_dev_runtime8 = __toESM(require_jsx_dev_runtime(), 1);
 var Nav = () => {
@@ -36113,6 +36494,11 @@ var Nav = () => {
         href: "#travel",
         className: "[&.active]:font-bold",
         children: "Travel Information"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("a", {
+        href: "#things-to-do",
+        className: "[&.active]:font-bold",
+        children: "Things To Do"
       }, undefined, false, undefined, this)
     ]
   }, undefined, true, undefined, this);
@@ -36140,6 +36526,10 @@ function App() {
       /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(Section, {
         id: "travel",
         children: /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(TravelInformation, {}, undefined, false, undefined, this)
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(Section, {
+        id: "things-to-do",
+        children: /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(ThingsToDo, {}, undefined, false, undefined, this)
       }, undefined, false, undefined, this)
     ]
   }, undefined, true, undefined, this);
@@ -36148,6 +36538,6 @@ var App_default = App;
 
 // src/main.tsx
 var jsx_dev_runtime9 = __toESM(require_jsx_dev_runtime(), 1);
-import_client.createRoot(document.getElementById("root")).render(/* @__PURE__ */ jsx_dev_runtime9.jsxDEV(import_react4.StrictMode, {
+import_client.createRoot(document.getElementById("root")).render(/* @__PURE__ */ jsx_dev_runtime9.jsxDEV(import_react6.StrictMode, {
   children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(App_default, {}, undefined, false, undefined, this)
 }, undefined, false, undefined, this));

@@ -282,7 +282,7 @@ export const ThingsToDo = () => {
 
 			{activities.map((section) => (
 				<section key={section.title} className="activity-section">
-					<h3>{section.title}</h3>
+					<h2>{section.title}</h2>
 					<div className="activity-grid">
 						{section.items.map((activity) => (
 							<ActivityCard key={activity.name} {...activity} />
