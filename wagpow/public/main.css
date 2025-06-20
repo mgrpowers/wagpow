@@ -299,7 +299,7 @@ body {
     font-size: 2em;
   }
   h3 {
-    font-size: 1.8em;
+    font-size: 1.9em;
   }
   p {
     font-size: 1.6em;
@@ -369,9 +369,7 @@ body {
   }
 }
 .things-to-do {
-  max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
 }
 .things-to-do .activity-section {
   margin: 2rem 0;
@@ -396,6 +394,7 @@ body {
 }
 .things-to-do .activity-card p {
   margin-bottom: 1rem;
+  font-size: 1.2rem;
 }
 .things-to-do .activity-card a {
   display: inline-flex;

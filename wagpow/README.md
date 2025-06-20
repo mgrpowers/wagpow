@@ -3,3 +3,5 @@ bun run compile-scss.js
 
 cp public/main.css ../main.css
 cp public/main.js ../main.js
+
+mr

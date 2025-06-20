@@ -23683,7 +23683,7 @@ var require_jsx_dev_runtime = __commonJS((exports, module) => {
 });
 
 // src/main.tsx
-var import_react6 = __toESM(require_react(), 1);
+var import_react7 = __toESM(require_react(), 1);
 var import_client = __toESM(require_client(), 1);
 // src/hooks/useAuth.tsx
 var import_react2 = __toESM(require_react(), 1);
@@ -36085,6 +36085,9 @@ var TravelInformation = () => {
     ]
   }, undefined, true, undefined, this);
 };
+// src/components/ThingsToDo.tsx
+var import_react6 = __toESM(require_react(), 1);
+
 // node_modules/lucide-react/dist/esm/createLucideIcon.js
 var import_react5 = __toESM(require_react(), 1);
 
@@ -36191,7 +36194,10 @@ var activities = [
         name: "Soumaya and Jumex Museums",
         description: "Next to each other!",
         mapLink: "https://maps.app.goo.gl/MZjChfm3mbWA38AdA",
-        link: "https://www.museosoumaya.org/ AND https://www.fundacionjumex.org/en"
+        link: [
+          "https://www.museosoumaya.org/",
+          "https://www.fundacionjumex.org/en"
+        ]
       },
       {
         name: "Frida Kahlo Museum",
@@ -36218,7 +36224,10 @@ var activities = [
       {
         name: "Chapultepec Castle and walk around the Park",
         mapLink: "https://maps.app.goo.gl/wz3u4Ahzbv55c4KSA",
-        link: "https://mnh.inah.gob.mx/home-en AND https://mexicocity.cdmx.gob.mx/locations/chapultepec-park/"
+        link: [
+          "https://mnh.inah.gob.mx/home-en",
+          "https://mexicocity.cdmx.gob.mx/locations/chapultepec-park/"
+        ]
       },
       {
         name: "Visit the Vasconcelos library",
@@ -36229,7 +36238,10 @@ var activities = [
         name: "Day trip to Teotihuacan",
         description: "Eat lunch at La Gruta",
         mapLink: "https://maps.app.goo.gl/BoVPPdXu2Lb7yrS18",
-        link: "https://inah.gob.mx/zonas/23-zona-arqueologica-de-teotihuacan AND https://www.lagruta.mx/index_en.php"
+        link: [
+          "https://inah.gob.mx/zonas/23-zona-arqueologica-de-teotihuacan",
+          "https://www.lagruta.mx/index_en.php"
+        ]
       },
       {
         name: "Day trip to Xochimilco",
@@ -36246,7 +36258,10 @@ var activities = [
         name: "Parque México and Avenida Amsterdam",
         description: "Perfect for a relaxing stroll",
         mapLink: "https://maps.app.goo.gl/7LvgdtVRQmFE1n9T8",
-        link: "https://mexicocity.cdmx.gob.mx/venues/parque-mexico/ AND https://mexicocity.cdmx.gob.mx/venues/avenida-amsterdam/"
+        link: [
+          "https://mexicocity.cdmx.gob.mx/venues/parque-mexico/",
+          "https://mexicocity.cdmx.gob.mx/venues/avenida-amsterdam/"
+        ]
       },
       {
         name: "Roma Norte Boutiques",
@@ -36300,7 +36315,7 @@ var activities = [
     ]
   },
   {
-    title: "Morning Food",
+    title: "Breakfast",
     items: [
       {
         name: "La Esquina del Chilaquil",
@@ -36326,7 +36341,7 @@ Jillian: avocado taco`,
     ]
   },
   {
-    title: "Midday Food",
+    title: "Lunch",
     items: [
       {
         name: "Tacos Hola",
@@ -36363,7 +36378,7 @@ Jillian: sope sencillo`,
     ]
   },
   {
-    title: "Evening Food",
+    title: "Dinner",
     items: [
       {
         name: "Por Siempre Vegana 2",
@@ -36427,7 +36442,14 @@ var ActivityCard = ({ name: name3, description, mapLink, link }) => /* @__PURE__
   className: "activity-card",
   children: [
     /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("h3", {
-      children: /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("a", {
+      children: typeof link === "object" ? /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(jsx_dev_runtime7.Fragment, {
+        children: name3.split("and").map((part, i) => /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("a", {
+          href: link[i],
+          target: "_blank",
+          rel: "noopener noreferrer",
+          children: part
+        }, i, false, undefined, this))
+      }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("a", {
         href: link,
         target: "_blank",
         rel: "noopener noreferrer",
@@ -36435,7 +36457,14 @@ var ActivityCard = ({ name: name3, description, mapLink, link }) => /* @__PURE__
       }, undefined, false, undefined, this)
     }, undefined, false, undefined, this),
     description && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("p", {
-      children: description
+      children: description.split(`
+`).map((line, i) => /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(import_react6.default.Fragment, {
+        children: [
+          line,
+          i < description.split(`
+`).length - 1 && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("br", {}, undefined, false, undefined, this)
+        ]
+      }, i, true, undefined, this))
     }, undefined, false, undefined, this),
     mapLink && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("a", {
       href: mapLink,
@@ -36499,7 +36528,7 @@ var Nav = () => {
       /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("a", {
         href: "#travel",
         className: "[&.active]:font-bold",
-        children: "Travel Information"
+        children: "Travel"
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("a", {
         href: "#things-to-do",
@@ -36544,6 +36573,6 @@ var App_default = App;
 
 // src/main.tsx
 var jsx_dev_runtime9 = __toESM(require_jsx_dev_runtime(), 1);
-import_client.createRoot(document.getElementById("root")).render(/* @__PURE__ */ jsx_dev_runtime9.jsxDEV(import_react6.StrictMode, {
+import_client.createRoot(document.getElementById("root")).render(/* @__PURE__ */ jsx_dev_runtime9.jsxDEV(import_react7.StrictMode, {
   children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(App_default, {}, undefined, false, undefined, this)
 }, undefined, false, undefined, this));
