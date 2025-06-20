@@ -135,6 +135,13 @@ const activities: ActivitySection[] = [
 				description: "Located in San Ángel, open on Saturdays",
 				mapLink: "https://maps.app.goo.gl/K2grbUXVwjYNFSNAA",
 			},
+			{
+				name: "Bazar Fusión",
+				description:
+					"A group of varied small stores in an old mansion in the Juárez neighborhood",
+				mapLink: "https://maps.app.goo.gl/XK7mV5yxYaKshbHi6",
+				link: "https://www.bazarfusion.com.mx/",
+			},
 		],
 	},
 	{
