@@ -35956,13 +35956,32 @@ var Schedule = () => {
         children: "Friday, August 8, 2025"
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
+        children: "6:00 p.m. to 10:00 p.m."
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
         children: "Evening welcome event"
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
-        children: "Please join us the night before our wedding as we welcome you to Mexico City."
-      }, undefined, false, undefined, this),
+        children: [
+          "Please join us at",
+          " ",
+          /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("a", {
+            target: "_blank",
+            href: "https://maps.app.goo.gl/jCcTNNYrB5SeFdug7",
+            children: "Casa Barcelona"
+          }, undefined, false, undefined, this),
+          " ",
+          "the night before our wedding as we welcome you to Mexico City.",
+          /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
+            children: "Dress code: Dressy Casual"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("h2", {
-        children: "Saturday, August 9, 2025, evening"
+        children: "Saturday, August 9, 2025"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
+        children: "5:00 p.m. until late"
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
         children: "Wedding"
@@ -35987,10 +36006,26 @@ var Schedule = () => {
         children: "Sunday, August 10, 2025"
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
+        children: "10:00 a.m. to 12:30 p.m."
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
         children: "Post-wedding brunch"
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
-        children: "Please join us for a post-wedding brunch"
+        children: [
+          "Please join us at",
+          " ",
+          /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("a", {
+            target: "_blank",
+            href: "https://maps.app.goo.gl/Ch8mNkLwJ36fRBTw9",
+            children: "Milo's"
+          }, undefined, false, undefined, this),
+          " ",
+          "for a post-wedding brunch"
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
+        children: "Dress code: Casual"
       }, undefined, false, undefined, this)
     ]
   }, undefined, true, undefined, this);

@@ -3,13 +3,22 @@ export const Schedule = () => {
 		<div className="wp-content">
 			<h1>Schedule</h1>
 			<h2>Friday, August 8, 2025</h2>
+			<p>6:00 p.m. to 10:00 p.m.</p>
 			<p>Evening welcome event</p>
 			<p>
-				Please join us the night before our wedding as we welcome you to
-				Mexico City.
+				Please join us at{" "}
+				<a
+					target="_blank"
+					href="https://maps.app.goo.gl/jCcTNNYrB5SeFdug7"
+				>
+					Casa Barcelona
+				</a>{" "}
+				the night before our wedding as we welcome you to Mexico City.
+				<p>Dress code: Dressy Casual</p>
 			</p>
-			{/* <p>Dress code: [thoughts?]</p> */}
-			<h2>Saturday, August 9, 2025, evening</h2>
+
+			<h2>Saturday, August 9, 2025</h2>
+			<p>5:00 p.m. until late</p>
 			<p>Wedding</p>
 			<p>
 				Please join us at{" "}
@@ -24,8 +33,19 @@ export const Schedule = () => {
 			</p>
 			<p>Dress code: Cocktail/Formal</p>
 			<h2>Sunday, August 10, 2025</h2>
+			<p>10:00 a.m. to 12:30 p.m.</p>
 			<p>Post-wedding brunch</p>
-			<p>Please join us for a post-wedding brunch</p>
+			<p>
+				Please join us at{" "}
+				<a
+					target="_blank"
+					href="https://maps.app.goo.gl/Ch8mNkLwJ36fRBTw9"
+				>
+					Milo's
+				</a>{" "}
+				for a post-wedding brunch
+			</p>
+			<p>Dress code: Casual</p>
 		</div>
 	)
 }
