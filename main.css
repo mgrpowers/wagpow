@@ -402,6 +402,7 @@ body {
   gap: 0.5rem;
   color: var(--color-primary);
   text-decoration: none;
+  margin-top: 0.5rem;
 }
 .things-to-do .activity-card a:hover {
   text-decoration: underline;

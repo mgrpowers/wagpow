@@ -36321,7 +36321,7 @@ var activities = [
         name: "La Esquina del Chilaquil",
         description: `Mike: torta de chilaquiles with pechuga and salsa verde
 Jillian: torta de chilaquiles campechana, no meat
-Tip: Buy coffee elsewhere, arrive early and expect to wait`,
+Tip: Buy coffee elsewhere, arrive early, and expect to wait`,
         mapLink: "https://maps.app.goo.gl/fq8XaPa1FverNzi59"
       },
       {
