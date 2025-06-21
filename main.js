@@ -35971,12 +35971,12 @@ var Schedule = () => {
             children: "Casa Barcelona"
           }, undefined, false, undefined, this),
           " ",
-          "the night before our wedding as we welcome you to Mexico City.",
-          /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
-            children: "Dress code: Dressy Casual"
-          }, undefined, false, undefined, this)
+          "the night before our wedding as we welcome you to Mexico City."
         ]
       }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
+        children: "Dress code: Dressy Casual"
+      }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("h2", {
         children: "Saturday, August 9, 2025"
       }, undefined, false, undefined, this),

@@ -14,9 +14,8 @@ export const Schedule = () => {
 					Casa Barcelona
 				</a>{" "}
 				the night before our wedding as we welcome you to Mexico City.
-				<p>Dress code: Dressy Casual</p>
 			</p>
-
+			<p>Dress code: Dressy Casual</p>
 			<h2>Saturday, August 9, 2025</h2>
 			<p>5:00 p.m. until late</p>
 			<p>Wedding</p>
