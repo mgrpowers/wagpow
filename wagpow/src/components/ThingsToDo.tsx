@@ -163,7 +163,7 @@ const activities: ActivitySection[] = [
 			{
 				name: "La Esquina del Chilaquil",
 				description:
-					"Mike: torta de chilaquiles with pechuga and salsa verde\nJillian: torta de chilaquiles campechana, no meat\nTip: Buy coffee elsewhere, arrive early and expect to wait",
+					"Mike: torta de chilaquiles with pechuga and salsa verde\nJillian: torta de chilaquiles campechana, no meat\nTip: Buy coffee elsewhere, arrive early, and expect to wait",
 				mapLink: "https://maps.app.goo.gl/fq8XaPa1FverNzi59",
 			},
 			{
@@ -294,14 +294,6 @@ const ActivityCard = ({ name, description, mapLink, link }: Activity) => (
 							{part}
 						</a>
 					))}
-
-					{/* <a
-						href={link?.[1]}
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						add'l
-					</a> */}
 				</>
 			) : (
 				<a href={link} target="_blank" rel="noopener noreferrer">
