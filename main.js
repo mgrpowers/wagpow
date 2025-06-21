@@ -36060,13 +36060,6 @@ var TravelInformation = () => {
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("hr", {}, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("h2", {
-        children: "Things to Do"
-      }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("p", {
-        children: "Please check back as we get closer to the event for restaurant and activity suggestions."
-      }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("hr", {}, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("h2", {
         children: "Registry"
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("p", {

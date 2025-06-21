@@ -63,12 +63,6 @@ export const TravelInformation = () => {
 				and the evenings are in the 50˚s.
 			</p>
 			<hr />
-			<h2>Things to Do</h2>
-			<p>
-				Please check back as we get closer to the event for restaurant
-				and activity suggestions.
-			</p>
-			<hr />
 			<h2>Registry</h2>
 			<p>
 				We appreciate the effort required to join us in Mexico City to
