@@ -58,7 +58,7 @@ const activities: ActivitySection[] = [
 		],
 	},
 	{
-		title: "Activities",
+		title: "Places to Wander",
 		items: [
 			{
 				name: "Chapultepec Castle and walk around the Park",
@@ -73,27 +73,6 @@ const activities: ActivitySection[] = [
 				mapLink: "https://maps.app.goo.gl/5WuiXyrV9TQ97VQH8",
 				link: "https://www.bibliotecavasconcelos.gob.mx/",
 			},
-			{
-				name: "Day trip to Teotihuacan",
-				description: "Eat lunch at La Gruta",
-				mapLink: "https://maps.app.goo.gl/BoVPPdXu2Lb7yrS18",
-				link: [
-					"https://inah.gob.mx/zonas/23-zona-arqueologica-de-teotihuacan",
-					"https://www.lagruta.mx/index_en.php",
-				],
-			},
-			{
-				name: "Day trip to Xochimilco",
-				description:
-					"Take a ride on a colorful boat—pair up with a group and bring snacks and drinks for a multi-hour ride around the chinampas",
-				mapLink: "https://maps.app.goo.gl/ZRoeeV7ckbXuQRsDA",
-				link: "https://mexicocity.cdmx.gob.mx/venues/xochimilco-ecological-park/",
-			},
-		],
-	},
-	{
-		title: "Places to Wander",
-		items: [
 			{
 				name: "Parque México and Avenida Amsterdam",
 				description: "Perfect for a relaxing stroll",
@@ -115,6 +94,12 @@ const activities: ActivitySection[] = [
 				link: "https://mexicocity.cdmx.gob.mx/tag/zocalo-area/",
 			},
 			{
+				name: "Plaza de la Tecnología",
+				description: "For all your technology needs",
+				mapLink: "https://maps.app.goo.gl/8Wk9JkCrmxZXR7ND9",
+				link: "https://plazastecnologicas.com/",
+			},
+			{
 				name: "Coyoacan Neighborhoods",
 				description: "Beautiful tree-lined streets",
 				mapLink: "https://maps.app.goo.gl/uB4WdqxdzCvRx2ZY9",
@@ -127,6 +112,28 @@ const activities: ActivitySection[] = [
 				mapLink:
 					"https://www.semovi.cdmx.gob.mx/tramites-y-servicios/mi-bici/muevete-en-bici",
 				link: "https://www.semovi.cdmx.gob.mx/tramites-y-servicios/mi-bici/muevete-en-bici",
+			},
+			{
+				name: "Skate Park Constituyentes",
+				description: "Wear your helmet, please",
+				mapLink: "https://maps.app.goo.gl/cK3iSzerQJpx94cXA",
+				link: "https://www.chapultepec.org.mx/proyecto/skatepark-constituyentes/",
+			},
+			{
+				name: "Day trip to Teotihuacan",
+				description: "Eat lunch at La Gruta",
+				mapLink: "https://maps.app.goo.gl/BoVPPdXu2Lb7yrS18",
+				link: [
+					"https://inah.gob.mx/zonas/23-zona-arqueologica-de-teotihuacan",
+					"https://www.lagruta.mx/index_en.php",
+				],
+			},
+			{
+				name: "Day trip to Xochimilco",
+				description:
+					"Take a ride on a colorful boat—pair up with a group and bring snacks and drinks for a multi-hour ride around the chinampas",
+				mapLink: "https://maps.app.goo.gl/ZRoeeV7ckbXuQRsDA",
+				link: "https://mexicocity.cdmx.gob.mx/venues/xochimilco-ecological-park/",
 			},
 		],
 	},
@@ -227,6 +234,13 @@ const activities: ActivitySection[] = [
 				link: "https://www.instagram.com/por_siempre_vegana_taqueria/?hl=en",
 			},
 			{
+				name: "Taquería El Greco",
+				description:
+					"Mike: taco Doneraky\nJillian: gringa de champiñones",
+				mapLink: "https://maps.app.goo.gl/Kraek3qfq14e4Nts5",
+				link: "https://www.instagram.com/taqueriaelgreco/?hl=en",
+			},
+			{
 				name: "Taquería Orinoco",
 				description:
 					"Mike: costra de pastor\nJillian: quesadilla\nMultiple locations available",
@@ -265,13 +279,13 @@ const activities: ActivitySection[] = [
 			},
 			{
 				name: "La Clandestina",
-				description: "Mezcal bar",
+				description: "Mezcal bar\nMike: mezcal\nJillian: not mezcal",
 				mapLink: "https://maps.app.goo.gl/29NwGoqPAGX7hjJZ8",
 				link: "https://laclandestina.mx/en/",
 			},
 			{
 				name: "El Palenquito",
-				description: "Mezcal bar",
+				description: "Mezcal bar\nMike: mezcal\nJillian: not mezcal",
 				mapLink: "https://maps.app.goo.gl/mKTyV19EAHNhWBav7",
 				link: "https://elpalenquito.com/",
 			},
