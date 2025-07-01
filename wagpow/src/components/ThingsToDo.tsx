@@ -39,7 +39,7 @@ const activities: ActivitySection[] = [
 			{
 				name: "Frida Kahlo Museum",
 				description:
-					"Reservations required. Pair this visit with a walk around Coyoacan",
+					"Reservations required. Pair this visit with a walk around Coyoacan.",
 				mapLink: "https://maps.app.goo.gl/jkMfduEuXU9F5wic8",
 				link: "https://www.museofridakahlo.org.mx/?lang=en",
 			},
@@ -69,7 +69,7 @@ const activities: ActivitySection[] = [
 				],
 			},
 			{
-				name: "Visit the Vasconcelos library",
+				name: "Vasconcelos library",
 				mapLink: "https://maps.app.goo.gl/5WuiXyrV9TQ97VQH8",
 				link: "https://www.bibliotecavasconcelos.gob.mx/",
 			},
@@ -88,7 +88,7 @@ const activities: ActivitySection[] = [
 				mapLink: "https://maps.app.goo.gl/HMDsGgMew9xZE8os9",
 			},
 			{
-				name: "Zocalo and Historic Center",
+				name: "Zocalo + Historic Center",
 				description: "The heart of Mexico City",
 				mapLink: "https://maps.app.goo.gl/yLt5qnskYy8aMqj29",
 				link: "https://mexicocity.cdmx.gob.mx/tag/zocalo-area/",
@@ -164,133 +164,6 @@ const activities: ActivitySection[] = [
 			},
 		],
 	},
-	{
-		title: "Breakfast",
-		items: [
-			{
-				name: "La Esquina del Chilaquil",
-				description:
-					"Mike: torta de chilaquiles with pechuga and salsa verde\nJillian: torta de chilaquiles campechana, no meat\nTip: Buy coffee elsewhere, arrive early, and expect to wait",
-				mapLink: "https://maps.app.goo.gl/fq8XaPa1FverNzi59",
-			},
-			{
-				name: "Panadería Rosetta",
-				description: "Mike: guava roll\nJillian: tarragon roll",
-				mapLink: "https://maps.app.goo.gl/iZWWYiVjWPmzqGPy5",
-				link: "https://www.instagram.com/panaderiarosetta/?hl=en",
-			},
-			{
-				name: "Molino El Pujol",
-				description: "Mike: café de olla\nJillian: avocado taco",
-				mapLink: "https://maps.app.goo.gl/QBY9vVhBVVQwYwdt5",
-				link: "https://pujol.com.mx/eng/molino-el-pujol/",
-			},
-		],
-	},
-	{
-		title: "Lunch",
-		items: [
-			{
-				name: "Tacos Hola",
-				description: "Mike: torta de coliflor\nJillian: quelites",
-				mapLink: "https://maps.app.goo.gl/SpfCurqybUCfBsyg9",
-				link: "https://www.instagram.com/tacosholaelguero/?hl=en",
-			},
-			{
-				name: "Tlacoyos Medellin",
-				description:
-					"Mike: tlacoyo de frijol with everything and green salsa\nJillian: tlacoyo de habas with everything and red salsa",
-				mapLink: "https://maps.app.goo.gl/KPJqYfUUPnk9Qkwx5",
-			},
-			{
-				name: "Tortas La Moderna",
-				description:
-					"Mike: torta de salchicha\nJillian: torta de tres quesos",
-				mapLink: "https://maps.app.goo.gl/WEUajfkGy5yyu7sU6",
-			},
-			{
-				name: "El Hidalguense",
-				description:
-					"Mike: barbacoa and consomé\nJillian: quesadilla de flor de calabaza",
-				mapLink: "https://maps.app.goo.gl/ARg7x9YoTSzAr62m6",
-			},
-			{
-				name: "Contramar",
-				description:
-					"Mike: pescado a la talla Contramar\nJillian: sope sencillo",
-				mapLink: "https://maps.app.goo.gl/BMzM7maUnhRnTAmt5",
-				link: "http://www.contramar.com.mx/english.html",
-			},
-		],
-	},
-	{
-		title: "Dinner",
-		items: [
-			{
-				name: "Por Siempre Vegana 2",
-				description:
-					"Both: vegan pastor tacos with pineapple and onion",
-				mapLink: "https://maps.app.goo.gl/tTjqxpfB9Wihc4wQ7",
-				link: "https://www.instagram.com/por_siempre_vegana_taqueria/?hl=en",
-			},
-			{
-				name: "Taquería El Greco",
-				description:
-					"Mike: taco Doneraky\nJillian: gringa de champiñones",
-				mapLink: "https://maps.app.goo.gl/Kraek3qfq14e4Nts5",
-				link: "https://www.instagram.com/taqueriaelgreco/?hl=en",
-			},
-			{
-				name: "Taquería Orinoco",
-				description:
-					"Mike: costra de pastor\nJillian: quesadilla\nMultiple locations available",
-				mapLink: "",
-				link: "https://taqueriaorinoco.com/",
-			},
-
-			{
-				name: "Restaurante Rosetta",
-				description:
-					"Mike: gnocchi\nJillian: pasta and fresh herbs with rosemary ice cream",
-				mapLink: "https://maps.app.goo.gl/kBSnqBCSn1s2hwQ16",
-				link: "https://rosetta.com.mx/en/",
-			},
-			{
-				name: "Galanga Thai House",
-				description: "Excellent Thai food in a beautiful setting",
-				mapLink: "https://maps.app.goo.gl/aEhdY4L55XzKwbEu7",
-			},
-		],
-	},
-	{
-		title: "Drinks",
-		items: [
-			{
-				name: "Baltra",
-				description: "Interesting cocktail bar",
-				mapLink: "https://maps.app.goo.gl/4TMiyxXmLas8g4T39",
-				link: "https://baltra.bar/",
-			},
-			{
-				name: "Meroma",
-				description: "Great for snacks and drinks",
-				mapLink: "https://maps.app.goo.gl/JZj47Z58cZzZ6c1K9",
-				link: "https://meroma.mx/",
-			},
-			{
-				name: "La Clandestina",
-				description: "Mezcal bar\nMike: mezcal\nJillian: not mezcal",
-				mapLink: "https://maps.app.goo.gl/29NwGoqPAGX7hjJZ8",
-				link: "https://laclandestina.mx/en/",
-			},
-			{
-				name: "El Palenquito",
-				description: "Mezcal bar\nMike: mezcal\nJillian: not mezcal",
-				mapLink: "https://maps.app.goo.gl/mKTyV19EAHNhWBav7",
-				link: "https://elpalenquito.com/",
-			},
-		],
-	},
 ]
 
 const ActivityCard = ({ name, description, mapLink, link }: Activity) => (
@@ -298,15 +171,18 @@ const ActivityCard = ({ name, description, mapLink, link }: Activity) => (
 		<h3>
 			{typeof link === "object" ? (
 				<>
-					{name.split("and").map((part, i) => (
-						<a
-							key={i}
-							href={link[i]}
-							target="_blank"
-							rel="noopener noreferrer"
-						>
-							{part}
-						</a>
+					{name.split("and").map((part, i, arr) => (
+						<>
+							<a
+								key={i}
+								href={link[i]}
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								{part}
+								{i < arr.length - 1 && " + "}
+							</a>{" "}
+						</>
 					))}
 				</>
 			) : (
@@ -335,8 +211,8 @@ const ActivityCard = ({ name, description, mapLink, link }: Activity) => (
 
 export const ThingsToDo = () => {
 	return (
-		<div className="wp-content things-to-do">
-			<h2>Things to Do in Mexico City</h2>
+		<div className="wp-content things-to">
+			<h1>Things to Do</h1>
 
 			{activities.map((section) => (
 				<section key={section.title} className="activity-section">

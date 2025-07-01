@@ -6,11 +6,14 @@ import {
 	Schedule,
 	TravelInformation,
 	ThingsToDo,
+	ThingsToEat,
 } from "./components"
 import { useAppStore } from "./hooks/useAppStore"
 import "./App.scss"
 
 const Nav = () => {
+	const isMobile = window.innerWidth < 768
+
 	return (
 		<div className="wp-navbar">
 			<a href="#home" className="[&.active]:font-bold">
@@ -20,13 +23,16 @@ const Nav = () => {
 				RSVP
 			</a>
 			<a href="#schedule" className="[&.active]:font-bold">
-				Schedule
+				{isMobile ? "📅" : "Schedule"}
 			</a>
 			<a href="#travel" className="[&.active]:font-bold">
-				Travel
+				{isMobile ? "🛫" : "Travel"}
 			</a>
 			<a href="#things-to-do" className="[&.active]:font-bold">
-				Things To Do
+				{isMobile ? "🚶" : "Things To Do"}
+			</a>
+			<a href="#things-to-eat" className="[&.active]:font-bold">
+				{isMobile ? "🌮" : "Things To Eat"}
 			</a>
 		</div>
 	)
@@ -54,8 +60,11 @@ function App() {
 			<Section id="travel">
 				<TravelInformation />
 			</Section>
-			<Section id={"things-to-do"}>
+			<Section id="things-to-do">
 				<ThingsToDo />
+			</Section>
+			<Section id="things-to-eat">
+				<ThingsToEat />
 			</Section>
 		</>
 	)

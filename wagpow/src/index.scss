@@ -81,10 +81,12 @@ p {
 	position: sticky;
 	top: calc(100% - 50px);
 	display: flex;
-	justify-content: center;
+	justify-content: space-evenly;
 	align-items: center;
 	gap: 1em;
 	background-color: #5c7685;
+	font-size: 1.3rem;
+	z-index: 1000;
 }
 
 @media (prefers-color-scheme: light) {
@@ -152,6 +154,10 @@ input[type="text"] {
 @media screen and (min-width: 600px) {
 	input {
 		font-size: 2em;
+	}
+
+	.wp-navbar {
+		justify-content: center;
 	}
 }
 
@@ -285,6 +291,7 @@ body {
 
 .wp-title {
 	text-align: center;
+	font-family: "SaveurSansRegular";
 }
 
 .hero-img {
@@ -307,7 +314,15 @@ body {
 }
 
 .wp-content {
-	max-width: 960px;
+	max-width: 1020px;
+}
+
+.wp-schedule {
+	margin: 0 0 3rem;
+
+	h2 {
+		font-family: "SaveurSansRegular";
+	}
 }
 
 .wp-error {
@@ -427,7 +442,8 @@ body {
 	}
 }
 
-.things-to-do {
+.things-to {
+	width: 100%;
 	margin: 0 auto;
 
 	.activity-section {

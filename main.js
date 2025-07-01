@@ -23683,7 +23683,7 @@ var require_jsx_dev_runtime = __commonJS((exports, module) => {
 });
 
 // src/main.tsx
-var import_react7 = __toESM(require_react(), 1);
+var import_react8 = __toESM(require_react(), 1);
 var import_client = __toESM(require_client(), 1);
 // src/hooks/useAuth.tsx
 var import_react2 = __toESM(require_react(), 1);
@@ -35764,7 +35764,7 @@ var RSVP = () => {
     children: [
       step !== 3 && /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("h2", {
         className: "wp-title",
-        children: "Please RSVP by July 1, 2025"
+        children: "Please RSVP by July 10, 2025"
       }, undefined, false, undefined, this),
       error && /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("p", {
         className: "wp-error",
@@ -35952,81 +35952,109 @@ var Schedule = () => {
       /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("h1", {
         children: "Schedule"
       }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("h2", {
-        children: "Friday, August 8, 2025"
-      }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
-        children: "6:00 p.m. to 10:00 p.m."
-      }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
-        children: "Evening welcome event"
-      }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
+      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+        className: "wp-schedule",
         children: [
-          "Please join us at",
-          " ",
-          /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("a", {
-            target: "_blank",
-            href: "https://maps.app.goo.gl/jCcTNNYrB5SeFdug7",
-            children: "Casa Barcelona"
+          /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("h2", {
+            children: "welcome dinner."
           }, undefined, false, undefined, this),
-          " ",
-          "the night before our wedding as we welcome you to Mexico City."
+          /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
+            children: [
+              "Friday, August 8, 2025",
+              /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("br", {}, undefined, false, undefined, this),
+              " 6:00 p.m. to 10:00 p.m.",
+              /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("br", {}, undefined, false, undefined, this),
+              "Casa Barcelona. Barcelona 26. Colonia Juárez"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
+            children: [
+              "Please join us at",
+              " ",
+              /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("a", {
+                target: "_blank",
+                href: "https://maps.app.goo.gl/jCcTNNYrB5SeFdug7",
+                children: "Casa Barcelona"
+              }, undefined, false, undefined, this),
+              " ",
+              "the night before our wedding as we welcome you to Mexico City."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
+            children: "Dress code: Dressy Casual"
+          }, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
-        children: "Dress code: Dressy Casual"
-      }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("h2", {
-        children: "Saturday, August 9, 2025"
-      }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
-        children: "5:00 p.m. until late"
-      }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
-        children: "Wedding"
-      }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
+      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+        className: "wp-schedule",
         children: [
-          "Please join us at",
-          " ",
-          /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("a", {
-            target: "_blank",
-            href: "https://www.google.com/maps/place/Proyectos+P%C3%BAblicos/@19.4294481,-99.1527793,17z/data=!3m1!4b1!4m6!3m5!1s0x85d1ff2d1ad218f3:0x91c0786937fd6dc8!8m2!3d19.4294481!4d-99.1527793!16s%2Fg%2F11c0vlh4jj?entry=ttu&g_ep=EgoyMDI1MDEyMi4wIKXMDSoASAFQAw%3D%3D",
-            children: "General Prim"
+          /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("h2", {
+            children: "Wedding."
           }, undefined, false, undefined, this),
-          " ",
-          "for our wedding ceremony. Drinks, dinner, and celebration to follow."
+          /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
+            children: [
+              "Saturday, August 9, 2025",
+              /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("br", {}, undefined, false, undefined, this),
+              " 5:00 p.m. until late",
+              /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("br", {}, undefined, false, undefined, this),
+              "General Prim. General Prim 30. Colonia Juárez"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
+            children: [
+              "Please join us at",
+              /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("a", {
+                target: "_blank",
+                href: "https://www.google.com/maps/place/Proyectos+P%C3%BAblicos/@19.4294481,-99.1527793,17z/data=!3m1!4b1!4m6!3m5!1s0x85d1ff2d1ad218f3:0x91c0786937fd6dc8!8m2!3d19.4294481!4d-99.1527793!16s%2Fg%2F11c0vlh4jj?entry=ttu&g_ep=EgoyMDI1MDEyMi4wIKXMDSoASAFQAw%3D%3D",
+                children: [
+                  " ",
+                  "General Prim"
+                ]
+              }, undefined, true, undefined, this),
+              " ",
+              "for our wedding ceremony. Drinks, dinner, and celebration to follow."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
+            children: "Dress code: Cocktail/Formal"
+          }, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
-        children: "Dress code: Cocktail/Formal"
-      }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("h2", {
-        children: "Sunday, August 10, 2025"
-      }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
-        children: "10:00 a.m. to 12:30 p.m."
-      }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
-        children: "Post-wedding brunch"
-      }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
+      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+        className: "wp-schedule",
         children: [
-          "Please join us at",
-          " ",
-          /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("a", {
-            target: "_blank",
-            href: "https://maps.app.goo.gl/Ch8mNkLwJ36fRBTw9",
-            children: "Milo's"
+          /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("h2", {
+            children: "brunch."
           }, undefined, false, undefined, this),
-          " ",
-          "for a post-wedding brunch"
+          /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
+            children: [
+              "Sunday, August 10, 2025 ",
+              /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("br", {}, undefined, false, undefined, this),
+              "10:00 a.m. to 12:30 p.m.",
+              /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("br", {}, undefined, false, undefined, this),
+              "Milo’s. Amsterdam 308. Colonia Hipódromo"
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
+            children: [
+              "Please join us at",
+              /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("a", {
+                target: "_blank",
+                href: "https://maps.app.goo.gl/Ch8mNkLwJ36fRBTw9",
+                children: [
+                  " ",
+                  "Milo's"
+                ]
+              }, undefined, true, undefined, this),
+              " ",
+              "for a post-wedding brunch."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
+            children: "Dress code: Casual"
+          }, undefined, false, undefined, this)
         ]
-      }, undefined, true, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
-        children: "Dress code: Casual"
-      }, undefined, false, undefined, this)
+      }, undefined, true, undefined, this)
     ]
   }, undefined, true, undefined, this);
 };
@@ -36229,7 +36257,7 @@ var activities = [
       },
       {
         name: "Frida Kahlo Museum",
-        description: "Reservations required. Pair this visit with a walk around Coyoacan",
+        description: "Reservations required. Pair this visit with a walk around Coyoacan.",
         mapLink: "https://maps.app.goo.gl/jkMfduEuXU9F5wic8",
         link: "https://www.museofridakahlo.org.mx/?lang=en"
       },
@@ -36258,7 +36286,7 @@ var activities = [
         ]
       },
       {
-        name: "Visit the Vasconcelos library",
+        name: "Vasconcelos library",
         mapLink: "https://maps.app.goo.gl/5WuiXyrV9TQ97VQH8",
         link: "https://www.bibliotecavasconcelos.gob.mx/"
       },
@@ -36277,7 +36305,7 @@ var activities = [
         mapLink: "https://maps.app.goo.gl/HMDsGgMew9xZE8os9"
       },
       {
-        name: "Zocalo and Historic Center",
+        name: "Zocalo + Historic Center",
         description: "The heart of Mexico City",
         mapLink: "https://maps.app.goo.gl/yLt5qnskYy8aMqj29",
         link: "https://mexicocity.cdmx.gob.mx/tag/zocalo-area/"
@@ -36348,7 +36376,85 @@ var activities = [
         link: "https://www.bazarfusion.com.mx/"
       }
     ]
-  },
+  }
+];
+var ActivityCard = ({ name: name3, description, mapLink, link }) => /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+  className: "activity-card",
+  children: [
+    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("h3", {
+      children: typeof link === "object" ? /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(jsx_dev_runtime7.Fragment, {
+        children: name3.split("and").map((part, i, arr) => /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(jsx_dev_runtime7.Fragment, {
+          children: [
+            /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("a", {
+              href: link[i],
+              target: "_blank",
+              rel: "noopener noreferrer",
+              children: [
+                part,
+                i < arr.length - 1 && " + "
+              ]
+            }, i, true, undefined, this),
+            " "
+          ]
+        }, undefined, true, undefined, this))
+      }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("a", {
+        href: link,
+        target: "_blank",
+        rel: "noopener noreferrer",
+        children: name3
+      }, undefined, false, undefined, this)
+    }, undefined, false, undefined, this),
+    description && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("p", {
+      children: description.split(`
+`).map((line, i) => /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(import_react6.default.Fragment, {
+        children: [
+          line,
+          i < description.split(`
+`).length - 1 && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("br", {}, undefined, false, undefined, this)
+        ]
+      }, i, true, undefined, this))
+    }, undefined, false, undefined, this),
+    mapLink && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("a", {
+      href: mapLink,
+      target: "_blank",
+      rel: "noopener noreferrer",
+      children: [
+        /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(MapPin, {
+          size: 16
+        }, undefined, false, undefined, this),
+        " View Map"
+      ]
+    }, undefined, true, undefined, this)
+  ]
+}, undefined, true, undefined, this);
+var ThingsToDo = () => {
+  return /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+    className: "wp-content things-to",
+    children: [
+      /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("h1", {
+        children: "Things to Do"
+      }, undefined, false, undefined, this),
+      activities.map((section) => /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("section", {
+        className: "activity-section",
+        children: [
+          /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("h2", {
+            children: section.title
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+            className: "activity-grid",
+            children: section.items.map((activity) => /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(ActivityCard, {
+              ...activity
+            }, activity.name, false, undefined, this))
+          }, undefined, false, undefined, this)
+        ]
+      }, section.title, true, undefined, this))
+    ]
+  }, undefined, true, undefined, this);
+};
+// src/components/ThingsToEat.tsx
+var import_react7 = __toESM(require_react(), 1);
+var jsx_dev_runtime8 = __toESM(require_jsx_dev_runtime(), 1);
+var foods = [
   {
     title: "Breakfast",
     items: [
@@ -36416,7 +36522,8 @@ Jillian: sope sencillo`,
     title: "Dinner",
     items: [
       {
-        name: "Por Siempre Vegana 2",
+        name: `Por Siempre 
+ Vegana 2`,
         description: "Both: vegan pastor tacos with pineapple and onion",
         mapLink: "https://maps.app.goo.gl/tTjqxpfB9Wihc4wQ7",
         link: "https://www.instagram.com/por_siempre_vegana_taqueria/?hl=en"
@@ -36484,40 +36591,40 @@ Jillian: not mezcal`,
     ]
   }
 ];
-var ActivityCard = ({ name: name3, description, mapLink, link }) => /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+var ActivityCard2 = ({ name: name3, description, mapLink, link }) => /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("div", {
   className: "activity-card",
   children: [
-    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("h3", {
-      children: typeof link === "object" ? /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(jsx_dev_runtime7.Fragment, {
-        children: name3.split("and").map((part, i) => /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("a", {
+    /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("h3", {
+      children: typeof link === "object" ? /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(jsx_dev_runtime8.Fragment, {
+        children: name3.split("and").map((part, i) => /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("a", {
           href: link[i],
           target: "_blank",
           rel: "noopener noreferrer",
           children: part
         }, i, false, undefined, this))
-      }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("a", {
+      }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("a", {
         href: link,
         target: "_blank",
         rel: "noopener noreferrer",
         children: name3
       }, undefined, false, undefined, this)
     }, undefined, false, undefined, this),
-    description && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("p", {
+    description && /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("p", {
       children: description.split(`
-`).map((line, i) => /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(import_react6.default.Fragment, {
+`).map((line, i) => /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(import_react7.default.Fragment, {
         children: [
           line,
           i < description.split(`
-`).length - 1 && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("br", {}, undefined, false, undefined, this)
+`).length - 1 && /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("br", {}, undefined, false, undefined, this)
         ]
       }, i, true, undefined, this))
     }, undefined, false, undefined, this),
-    mapLink && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("a", {
+    mapLink && /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("a", {
       href: mapLink,
       target: "_blank",
       rel: "noopener noreferrer",
       children: [
-        /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(MapPin, {
+        /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(MapPin, {
           size: 16
         }, undefined, false, undefined, this),
         " View Map"
@@ -36525,22 +36632,22 @@ var ActivityCard = ({ name: name3, description, mapLink, link }) => /* @__PURE__
     }, undefined, true, undefined, this)
   ]
 }, undefined, true, undefined, this);
-var ThingsToDo = () => {
-  return /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
-    className: "wp-content things-to-do",
+var ThingsToEat = () => {
+  return /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("div", {
+    className: "wp-content things-to",
     children: [
-      /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("h2", {
-        children: "Things to Do in Mexico City"
+      /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("h1", {
+        children: "Things to Eat"
       }, undefined, false, undefined, this),
-      activities.map((section) => /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("section", {
+      foods.map((section) => /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("section", {
         className: "activity-section",
         children: [
-          /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("h2", {
+          /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("h2", {
             children: section.title
           }, undefined, false, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+          /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("div", {
             className: "activity-grid",
-            children: section.items.map((activity) => /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(ActivityCard, {
+            children: section.items.map((activity) => /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(ActivityCard2, {
               ...activity
             }, activity.name, false, undefined, this))
           }, undefined, false, undefined, this)
@@ -36550,36 +36657,42 @@ var ThingsToDo = () => {
   }, undefined, true, undefined, this);
 };
 // src/App.tsx
-var jsx_dev_runtime8 = __toESM(require_jsx_dev_runtime(), 1);
+var jsx_dev_runtime9 = __toESM(require_jsx_dev_runtime(), 1);
 var Nav = () => {
-  return /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("div", {
+  const isMobile = window.innerWidth < 768;
+  return /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("div", {
     className: "wp-navbar",
     children: [
-      /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("a", {
+      /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("a", {
         href: "#home",
         className: "[&.active]:font-bold",
         children: "J + M"
       }, undefined, false, undefined, this),
       " ",
-      /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("a", {
+      /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("a", {
         href: "#rsvp",
         className: "[&.active]:font-bold",
         children: "RSVP"
       }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("a", {
+      /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("a", {
         href: "#schedule",
         className: "[&.active]:font-bold",
-        children: "Schedule"
+        children: isMobile ? "\uD83D\uDCC5" : "Schedule"
       }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("a", {
+      /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("a", {
         href: "#travel",
         className: "[&.active]:font-bold",
-        children: "Travel"
+        children: isMobile ? "\uD83D\uDEEB" : "Travel"
       }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("a", {
+      /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("a", {
         href: "#things-to-do",
         className: "[&.active]:font-bold",
-        children: "Things To Do"
+        children: isMobile ? "\uD83D\uDEB6" : "Things To Do"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("a", {
+        href: "#things-to-eat",
+        className: "[&.active]:font-bold",
+        children: isMobile ? "\uD83C\uDF2E" : "Things To Eat"
       }, undefined, false, undefined, this)
     ]
   }, undefined, true, undefined, this);
@@ -36587,30 +36700,34 @@ var Nav = () => {
 function App() {
   const { authenticated } = useAppStore();
   if (!authenticated) {
-    return /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(Login, {}, undefined, false, undefined, this);
+    return /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(Login, {}, undefined, false, undefined, this);
   }
-  return /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(jsx_dev_runtime8.Fragment, {
+  return /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(jsx_dev_runtime9.Fragment, {
     children: [
-      /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(Nav, {}, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(Section, {
+      /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(Nav, {}, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(Section, {
         id: "home",
-        children: /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(Home, {}, undefined, false, undefined, this)
+        children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(Home, {}, undefined, false, undefined, this)
       }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(Section, {
+      /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(Section, {
         id: "rsvp",
-        children: /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(RSVP, {}, undefined, false, undefined, this)
+        children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(RSVP, {}, undefined, false, undefined, this)
       }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(Section, {
+      /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(Section, {
         id: "schedule",
-        children: /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(Schedule, {}, undefined, false, undefined, this)
+        children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(Schedule, {}, undefined, false, undefined, this)
       }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(Section, {
+      /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(Section, {
         id: "travel",
-        children: /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(TravelInformation, {}, undefined, false, undefined, this)
+        children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(TravelInformation, {}, undefined, false, undefined, this)
       }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(Section, {
+      /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(Section, {
         id: "things-to-do",
-        children: /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(ThingsToDo, {}, undefined, false, undefined, this)
+        children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(ThingsToDo, {}, undefined, false, undefined, this)
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(Section, {
+        id: "things-to-eat",
+        children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(ThingsToEat, {}, undefined, false, undefined, this)
       }, undefined, false, undefined, this)
     ]
   }, undefined, true, undefined, this);
@@ -36618,7 +36735,7 @@ function App() {
 var App_default = App;
 
 // src/main.tsx
-var jsx_dev_runtime9 = __toESM(require_jsx_dev_runtime(), 1);
-import_client.createRoot(document.getElementById("root")).render(/* @__PURE__ */ jsx_dev_runtime9.jsxDEV(import_react7.StrictMode, {
-  children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(App_default, {}, undefined, false, undefined, this)
+var jsx_dev_runtime10 = __toESM(require_jsx_dev_runtime(), 1);
+import_client.createRoot(document.getElementById("root")).render(/* @__PURE__ */ jsx_dev_runtime10.jsxDEV(import_react8.StrictMode, {
+  children: /* @__PURE__ */ jsx_dev_runtime10.jsxDEV(App_default, {}, undefined, false, undefined, this)
 }, undefined, false, undefined, this));
