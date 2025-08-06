@@ -59,8 +59,8 @@ export const Schedule = () => {
 			{currentLocation && (
 				<div className="wp-schedule activity-card ">
 					<h2>WagPowTracker5000: </h2>
-					<h3>We are probably at {currentLocation} right now...</h3>
-					<p>Call or text for questions: 831.708.8798</p>
+					<h3>We are probably {currentLocation}</h3>
+					<p>Call or text for questions: 831.325.6813</p>
 				</div>
 			)}
 

@@ -35644,13 +35644,12 @@ var Schedule = () => {
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("h3", {
             children: [
-              "We are probably at ",
-              currentLocation,
-              " right now..."
+              "We are probably ",
+              currentLocation
             ]
           }, undefined, true, undefined, this),
           /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
-            children: "Call or text for questions: 831.708.8798"
+            children: "Call or text for questions: 831.325.6813"
           }, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this),
