@@ -23683,7 +23683,7 @@ var require_jsx_dev_runtime = __commonJS((exports, module) => {
 });
 
 // src/main.tsx
-var import_react8 = __toESM(require_react(), 1);
+var import_react9 = __toESM(require_react(), 1);
 var import_client = __toESM(require_client(), 1);
 // src/hooks/useAuth.tsx
 var import_react2 = __toESM(require_react(), 1);
@@ -29644,11 +29644,6 @@ function __PRIVATE_estimateByteSize(e) {
       throw fail();
   }
 }
-function __PRIVATE_refValue(e, t) {
-  return {
-    referenceValue: `projects/${e.projectId}/databases/${e.database}/documents/${t.path.canonicalString()}`
-  };
-}
 function isInteger(e) {
   return !!e && "integerValue" in e;
 }
@@ -30158,10 +30153,6 @@ function __PRIVATE__queryToTarget(e, t) {
     const n = e.endAt ? new Bound(e.endAt.position, e.endAt.inclusive) : null, r = e.startAt ? new Bound(e.startAt.position, e.startAt.inclusive) : null;
     return __PRIVATE_newTarget(e.path, e.collectionGroup, t, e.filters, e.limit, n, r);
   }
-}
-function __PRIVATE_queryWithAddedFilter(e, t) {
-  const n = e.filters.concat([t]);
-  return new __PRIVATE_QueryImpl(e.path, e.collectionGroup, e.explicitOrderBy.slice(), n, e.limit, e.limitType, e.startAt, e.endAt);
 }
 function __PRIVATE_queryWithLimit(e, t, n) {
   return new __PRIVATE_QueryImpl(e.path, e.collectionGroup, e.explicitOrderBy.slice(), e.filters.slice(), t, n, e.startAt, e.endAt);
@@ -35133,9 +35124,6 @@ function __PRIVATE_parseSetData(e, t, n, r, i, s = {}) {
     a = null, u = o.fieldTransforms;
   return new ParsedSetData(new ObjectValue(_), a, u);
 }
-function __PRIVATE_parseQueryValue(e, t, n, r = false) {
-  return __PRIVATE_parseData(n, e.$u(r ? 4 : 3, t));
-}
 function __PRIVATE_parseData(e, t) {
   if (__PRIVATE_looksLikeJsonObject(e = getModularInstance(e)))
     return __PRIVATE_validatePlainObject("Unsupported field value:", t, e), __PRIVATE_parseObject(e, t);
@@ -35331,134 +35319,6 @@ function __PRIVATE_fieldPathFromArgument(e, t) {
 function __PRIVATE_validateHasExplicitOrderByForLimitToLast(e) {
   if (e.limitType === "L" && e.explicitOrderBy.length === 0)
     throw new FirestoreError(D.UNIMPLEMENTED, "limitToLast() queries require specifying at least one orderBy() clause");
-}
-
-class AppliableConstraint {
-}
-
-class QueryConstraint extends AppliableConstraint {
-}
-function query(e, t, ...n) {
-  let r = [];
-  t instanceof AppliableConstraint && r.push(t), r = r.concat(n), function __PRIVATE_validateQueryConstraintArray(e2) {
-    const t2 = e2.filter((e3) => e3 instanceof QueryCompositeFilterConstraint).length, n2 = e2.filter((e3) => e3 instanceof QueryFieldFilterConstraint).length;
-    if (t2 > 1 || t2 > 0 && n2 > 0)
-      throw new FirestoreError(D.INVALID_ARGUMENT, "InvalidQuery. When using composite filters, you cannot use more than one filter at the top level. Consider nesting the multiple filters within an `and(...)` statement. For example: change `query(query, where(...), or(...))` to `query(query, and(where(...), or(...)))`.");
-  }(r);
-  for (const t2 of r)
-    e = t2._apply(e);
-  return e;
-}
-
-class QueryFieldFilterConstraint extends QueryConstraint {
-  constructor(e, t, n) {
-    super(), this._field = e, this._op = t, this._value = n, this.type = "where";
-  }
-  static _create(e, t, n) {
-    return new QueryFieldFilterConstraint(e, t, n);
-  }
-  _apply(e) {
-    const t = this._parse(e);
-    return __PRIVATE_validateNewFieldFilter(e._query, t), new Query(e.firestore, e.converter, __PRIVATE_queryWithAddedFilter(e._query, t));
-  }
-  _parse(e) {
-    const t = __PRIVATE_newUserDataReader(e.firestore), n = function __PRIVATE_newQueryFilter(e2, t2, n2, r, i, s, o) {
-      let _;
-      if (i.isKeyField()) {
-        if (s === "array-contains" || s === "array-contains-any")
-          throw new FirestoreError(D.INVALID_ARGUMENT, `Invalid Query. You can't perform '${s}' queries on documentId().`);
-        if (s === "in" || s === "not-in") {
-          __PRIVATE_validateDisjunctiveFilterElements(o, s);
-          const t3 = [];
-          for (const n3 of o)
-            t3.push(__PRIVATE_parseDocumentIdValue(r, e2, n3));
-          _ = {
-            arrayValue: {
-              values: t3
-            }
-          };
-        } else
-          _ = __PRIVATE_parseDocumentIdValue(r, e2, o);
-      } else
-        s !== "in" && s !== "not-in" && s !== "array-contains-any" || __PRIVATE_validateDisjunctiveFilterElements(o, s), _ = __PRIVATE_parseQueryValue(n2, t2, o, s === "in" || s === "not-in");
-      return FieldFilter.create(i, s, _);
-    }(e._query, "where", t, e.firestore._databaseId, this._field, this._op, this._value);
-    return n;
-  }
-}
-function where(e, t, n) {
-  const r = t, i = __PRIVATE_fieldPathFromArgument("where", e);
-  return QueryFieldFilterConstraint._create(i, r, n);
-}
-
-class QueryCompositeFilterConstraint extends AppliableConstraint {
-  constructor(e, t) {
-    super(), this.type = e, this._queryConstraints = t;
-  }
-  static _create(e, t) {
-    return new QueryCompositeFilterConstraint(e, t);
-  }
-  _parse(e) {
-    const t = this._queryConstraints.map((t2) => t2._parse(e)).filter((e2) => e2.getFilters().length > 0);
-    return t.length === 1 ? t[0] : CompositeFilter.create(t, this._getOperator());
-  }
-  _apply(e) {
-    const t = this._parse(e);
-    return t.getFilters().length === 0 ? e : (function __PRIVATE_validateNewFilter(e2, t2) {
-      let n = e2;
-      const r = t2.getFlattenedFilters();
-      for (const e3 of r)
-        __PRIVATE_validateNewFieldFilter(n, e3), n = __PRIVATE_queryWithAddedFilter(n, e3);
-    }(e._query, t), new Query(e.firestore, e.converter, __PRIVATE_queryWithAddedFilter(e._query, t)));
-  }
-  _getQueryConstraints() {
-    return this._queryConstraints;
-  }
-  _getOperator() {
-    return this.type === "and" ? "and" : "or";
-  }
-}
-function __PRIVATE_parseDocumentIdValue(e, t, n) {
-  if (typeof (n = getModularInstance(n)) == "string") {
-    if (n === "")
-      throw new FirestoreError(D.INVALID_ARGUMENT, "Invalid query. When querying with documentId(), you must provide a valid document ID, but it was an empty string.");
-    if (!__PRIVATE_isCollectionGroupQuery(t) && n.indexOf("/") !== -1)
-      throw new FirestoreError(D.INVALID_ARGUMENT, `Invalid query. When querying a collection by documentId(), you must provide a plain document ID, but '${n}' contains a '/' character.`);
-    const r = t.path.child(ResourcePath.fromString(n));
-    if (!DocumentKey.isDocumentKey(r))
-      throw new FirestoreError(D.INVALID_ARGUMENT, `Invalid query. When querying a collection group by documentId(), the value provided must result in a valid document path, but '${r}' is not because it has an odd number of segments (${r.length}).`);
-    return __PRIVATE_refValue(e, new DocumentKey(r));
-  }
-  if (n instanceof DocumentReference)
-    return __PRIVATE_refValue(e, n._key);
-  throw new FirestoreError(D.INVALID_ARGUMENT, `Invalid query. When querying with documentId(), you must provide a valid string or a DocumentReference, but it was: ${__PRIVATE_valueDescription(n)}.`);
-}
-function __PRIVATE_validateDisjunctiveFilterElements(e, t) {
-  if (!Array.isArray(e) || e.length === 0)
-    throw new FirestoreError(D.INVALID_ARGUMENT, `Invalid Query. A non-empty array is required for '${t.toString()}' filters.`);
-}
-function __PRIVATE_validateNewFieldFilter(e, t) {
-  const n = function __PRIVATE_findOpInsideFilters(e2, t2) {
-    for (const n2 of e2)
-      for (const e3 of n2.getFlattenedFilters())
-        if (t2.indexOf(e3.op) >= 0)
-          return e3.op;
-    return null;
-  }(e.filters, function __PRIVATE_conflictingOps(e2) {
-    switch (e2) {
-      case "!=":
-        return ["!=", "not-in"];
-      case "array-contains-any":
-      case "in":
-        return ["not-in"];
-      case "not-in":
-        return ["array-contains-any", "in", "not-in", "!="];
-      default:
-        return [];
-    }
-  }(t.op));
-  if (n !== null)
-    throw n === t.op ? new FirestoreError(D.INVALID_ARGUMENT, `Invalid query. You cannot use more than one '${t.op.toString()}' filter.`) : new FirestoreError(D.INVALID_ARGUMENT, `Invalid query. You cannot use '${t.op.toString()}' filters with '${n.toString()}' filters.`);
 }
 class AbstractUserDataWriter {
   convertValue(e, t = "none") {
@@ -35699,207 +35559,6 @@ var db = getFirestore(app2);
 
 // src/components/RSVP.tsx
 var jsx_dev_runtime3 = __toESM(require_jsx_dev_runtime(), 1);
-var Step = ({ children }) => {
-  return /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
-    className: "step",
-    children
-  }, undefined, false, undefined, this);
-};
-var RSVP = () => {
-  const rsvp = localStorage.getItem("rsvp");
-  const [step, setStep] = import_react3.useState(rsvp ? 3 : 1);
-  const [search, setSearch] = import_react3.useState("");
-  const [family, setFamily] = import_react3.useState();
-  const [error, setError] = import_react3.useState("");
-  const handleFindFamily = async (e) => {
-    e.preventDefault();
-    const errorText = "Oops, try another name or call me: 831.325.6813";
-    try {
-      const familiesRef = collection(db, "families");
-      const lcName = search.replace("-", " ").toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-      const q = query(familiesRef, where("members", "array-contains", {
-        name: lcName
-      }));
-      const querySnapshot = await getDocs(q);
-      console.log("querySnapshot", querySnapshot.empty);
-      if (!querySnapshot.empty) {
-        const familyDoc = querySnapshot.docs[0].data();
-        setFamily(() => familyDoc);
-        setError("");
-        setStep(2);
-      } else {
-        setError(errorText);
-      }
-    } catch (error2) {
-      console.error("Error finding family: ", error2);
-      setError(errorText);
-    }
-  };
-  const updateFamilyMember = (member, key, value) => {
-    const updatedFamily = { ...family };
-    const updatedMember = updatedFamily?.members?.find((m) => m.name === member);
-    if (updatedMember) {
-      updatedMember[key] = value;
-    }
-    setFamily(() => updatedFamily);
-  };
-  const updateFamilyEmail = (email) => {
-    const updatedFamily = { ...family };
-    updatedFamily.email = email;
-    setFamily(() => updatedFamily);
-  };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await addDoc(collection(db, "rsvps"), family);
-      setStep(3);
-      localStorage.setItem("rsvp", "true");
-    } catch (error2) {
-      console.error("Error adding document: ", error2);
-      setError("Failed to submit RSVP. Please try again.");
-    }
-  };
-  return /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
-    className: "hero wp-rsvp wp-content",
-    children: [
-      step !== 3 && /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("h2", {
-        className: "wp-title",
-        children: "Please RSVP by July 10, 2025"
-      }, undefined, false, undefined, this),
-      error && /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("p", {
-        className: "wp-error",
-        children: error
-      }, undefined, false, undefined, this),
-      step === 3 && /* @__PURE__ */ jsx_dev_runtime3.jsxDEV(Step, {
-        children: /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("h2", {
-          children: "Thank you for RSVPing! Please let us know if you'd like to make any changes."
-        }, undefined, false, undefined, this)
-      }, undefined, false, undefined, this),
-      step === 2 && family && /* @__PURE__ */ jsx_dev_runtime3.jsxDEV(Step, {
-        children: [
-          /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("h3", {
-            children: [
-              "Step 2: RSVP for ",
-              family?.name
-            ]
-          }, undefined, true, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("form", {
-            className: "rsvp-form",
-            children: [
-              family?.members.map((member) => {
-                return /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
-                  className: "rsvp-form-row",
-                  children: [
-                    /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
-                      children: [
-                        /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("h3", {
-                          children: member.name
-                        }, undefined, false, undefined, this),
-                        /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
-                          children: /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("input", {
-                            disabled: !member.attending,
-                            className: "rsvp-form-input",
-                            type: "text",
-                            placeholder: "Dietary Restrictions",
-                            onChange: (e) => updateFamilyMember(member.name, "dietaryRestrictions", e.target.value)
-                          }, undefined, false, undefined, this)
-                        }, undefined, false, undefined, this)
-                      ]
-                    }, undefined, true, undefined, this),
-                    /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
-                      className: "rsvp-form-options",
-                      children: /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("fieldset", {
-                        children: [
-                          /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("legend", {
-                            children: "Will:"
-                          }, undefined, false, undefined, this),
-                          /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
-                            onClick: () => updateFamilyMember(member.name, "attending", true),
-                            children: [
-                              /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("input", {
-                                type: "radio",
-                                name: `attending-${member.name}`,
-                                value: "attending",
-                                checked: member.attending,
-                                readOnly: true
-                              }, undefined, false, undefined, this),
-                              /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("label", {
-                                htmlFor: `attending-${member.name}`,
-                                children: "Attend"
-                              }, undefined, false, undefined, this)
-                            ]
-                          }, undefined, true, undefined, this),
-                          /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
-                            onClick: () => updateFamilyMember(member.name, "attending", false),
-                            children: [
-                              /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("input", {
-                                type: "radio",
-                                name: `notattending-${member.name}`,
-                                value: "notattending",
-                                checked: !member.attending,
-                                readOnly: true
-                              }, undefined, false, undefined, this),
-                              /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("label", {
-                                htmlFor: `notattending-${member.name}`,
-                                children: "Not Attend"
-                              }, undefined, false, undefined, this)
-                            ]
-                          }, undefined, true, undefined, this)
-                        ]
-                      }, undefined, true, undefined, this)
-                    }, undefined, false, undefined, this)
-                  ]
-                }, member.name, true, undefined, this);
-              }),
-              /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
-                className: "rsvp-form-row",
-                children: [
-                  /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("label", {
-                    className: `rsvp-form-email ${family?.members.some((m) => m.attending) && "active"}`,
-                    children: [
-                      "Please add an email",
-                      /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("input", {
-                        placeholder: "email",
-                        name: "email",
-                        type: "email",
-                        onChange: (e) => updateFamilyEmail(e.target.value)
-                      }, undefined, false, undefined, this)
-                    ]
-                  }, undefined, true, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("button", {
-                    onClick: handleSubmit,
-                    type: "submit",
-                    children: "RSVP"
-                  }, undefined, false, undefined, this)
-                ]
-              }, undefined, true, undefined, this)
-            ]
-          }, undefined, true, undefined, this)
-        ]
-      }, undefined, true, undefined, this),
-      step === 1 && /* @__PURE__ */ jsx_dev_runtime3.jsxDEV(Step, {
-        children: [
-          /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("h3", {
-            children: "Step 1: Search for a member of your family"
-          }, undefined, false, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("form", {
-            className: "rsvp-form rsvp-form-find",
-            children: [
-              /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("input", {
-                onChange: (e) => setSearch(e.target.value),
-                placeholder: "Name"
-              }, undefined, false, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("button", {
-                onClick: handleFindFamily,
-                children: "Find"
-              }, undefined, false, undefined, this)
-            ]
-          }, undefined, true, undefined, this)
-        ]
-      }, undefined, true, undefined, this)
-    ]
-  }, undefined, true, undefined, this);
-};
 // src/components/Home.tsx
 var jsx_dev_runtime4 = __toESM(require_jsx_dev_runtime(), 1);
 var Home = () => {
@@ -35944,11 +35603,57 @@ var Home = () => {
   }, undefined, false, undefined, this);
 };
 // src/components/Schedule.tsx
+var import_react4 = __toESM(require_react(), 1);
 var jsx_dev_runtime5 = __toESM(require_jsx_dev_runtime(), 1);
 var Schedule = () => {
+  const [currentLocation, setCurrentLocation] = import_react4.useState(null);
+  const getOurCurrentLocation = () => {
+    const ourLocation = collection(db, "where");
+    getDocs(ourLocation).then((snapshot) => {
+      const locations = snapshot.docs.map((doc2) => doc2.data());
+      console.log("locations", locations);
+      const location = locations.reduce((latest, current) => {
+        return latest.timestamp.seconds > current.timestamp.seconds ? latest : current;
+      }, locations[0]);
+      setCurrentLocation(location?.location);
+    });
+  };
+  const setOurCurrentLocation = async (location) => {
+    const ourLocation = collection(db, "where");
+    await addDoc(ourLocation, {
+      location,
+      timestamp: new Date
+    });
+  };
+  import_react4.useEffect(() => {
+    getOurCurrentLocation();
+    const urlParams = new URLSearchParams(window.location.search);
+    const location = urlParams.get("location");
+    if (location) {
+      setOurCurrentLocation(location);
+    }
+  }, []);
   return /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
-    className: "wp-content",
+    className: "wp-content things-to",
     children: [
+      currentLocation && /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+        className: "wp-schedule activity-card ",
+        children: [
+          /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("h2", {
+            children: "WagPowTracker5000: "
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("h3", {
+            children: [
+              "We are probably at ",
+              currentLocation,
+              " right now..."
+            ]
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
+            children: "Call or text for questions: 831.708.8798"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("h1", {
         children: "Schedule"
       }, undefined, false, undefined, this),
@@ -36142,10 +35847,10 @@ var TravelInformation = () => {
   }, undefined, true, undefined, this);
 };
 // src/components/ThingsToDo.tsx
-var import_react6 = __toESM(require_react(), 1);
+var import_react7 = __toESM(require_react(), 1);
 
 // node_modules/lucide-react/dist/esm/createLucideIcon.js
-var import_react5 = __toESM(require_react(), 1);
+var import_react6 = __toESM(require_react(), 1);
 
 // node_modules/lucide-react/dist/esm/shared/src/utils.js
 var toKebabCase = (string) => string.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase();
@@ -36166,7 +35871,7 @@ var hasA11yProp = (props) => {
 };
 
 // node_modules/lucide-react/dist/esm/Icon.js
-var import_react4 = __toESM(require_react(), 1);
+var import_react5 = __toESM(require_react(), 1);
 
 // node_modules/lucide-react/dist/esm/defaultAttributes.js
 var defaultAttributes = {
@@ -36182,7 +35887,7 @@ var defaultAttributes = {
 };
 
 // node_modules/lucide-react/dist/esm/Icon.js
-var Icon = import_react4.forwardRef(({
+var Icon = import_react5.forwardRef(({
   color = "currentColor",
   size = 24,
   strokeWidth = 2,
@@ -36191,7 +35896,7 @@ var Icon = import_react4.forwardRef(({
   children,
   iconNode,
   ...rest
-}, ref) => import_react4.createElement("svg", {
+}, ref) => import_react5.createElement("svg", {
   ref,
   ...defaultAttributes,
   width: size,
@@ -36202,13 +35907,13 @@ var Icon = import_react4.forwardRef(({
   ...!children && !hasA11yProp(rest) && { "aria-hidden": "true" },
   ...rest
 }, [
-  ...iconNode.map(([tag, attrs]) => import_react4.createElement(tag, attrs)),
+  ...iconNode.map(([tag, attrs]) => import_react5.createElement(tag, attrs)),
   ...Array.isArray(children) ? children : [children]
 ]));
 
 // node_modules/lucide-react/dist/esm/createLucideIcon.js
 var createLucideIcon = (iconName, iconNode) => {
-  const Component2 = import_react5.forwardRef(({ className, ...props }, ref) => import_react5.createElement(Icon, {
+  const Component2 = import_react6.forwardRef(({ className, ...props }, ref) => import_react6.createElement(Icon, {
     ref,
     iconNode,
     className: mergeClasses(`lucide-${toKebabCase(toPascalCase(iconName))}`, `lucide-${iconName}`, className),
@@ -36406,7 +36111,7 @@ var ActivityCard = ({ name: name3, description, mapLink, link }) => /* @__PURE__
     }, undefined, false, undefined, this),
     description && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("p", {
       children: description.split(`
-`).map((line, i) => /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(import_react6.default.Fragment, {
+`).map((line, i) => /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(import_react7.default.Fragment, {
         children: [
           line,
           i < description.split(`
@@ -36452,7 +36157,7 @@ var ThingsToDo = () => {
   }, undefined, true, undefined, this);
 };
 // src/components/ThingsToEat.tsx
-var import_react7 = __toESM(require_react(), 1);
+var import_react8 = __toESM(require_react(), 1);
 var jsx_dev_runtime8 = __toESM(require_jsx_dev_runtime(), 1);
 var foods = [
   {
@@ -36611,7 +36316,7 @@ var ActivityCard2 = ({ name: name3, description, mapLink, link }) => /* @__PURE_
     }, undefined, false, undefined, this),
     description && /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("p", {
       children: description.split(`
-`).map((line, i) => /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(import_react7.default.Fragment, {
+`).map((line, i) => /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(import_react8.default.Fragment, {
         children: [
           line,
           i < description.split(`
@@ -36710,10 +36415,6 @@ function App() {
         children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(Home, {}, undefined, false, undefined, this)
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(Section, {
-        id: "rsvp",
-        children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(RSVP, {}, undefined, false, undefined, this)
-      }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(Section, {
         id: "schedule",
         children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(Schedule, {}, undefined, false, undefined, this)
       }, undefined, false, undefined, this),
@@ -36736,6 +36437,6 @@ var App_default = App;
 
 // src/main.tsx
 var jsx_dev_runtime10 = __toESM(require_jsx_dev_runtime(), 1);
-import_client.createRoot(document.getElementById("root")).render(/* @__PURE__ */ jsx_dev_runtime10.jsxDEV(import_react8.StrictMode, {
+import_client.createRoot(document.getElementById("root")).render(/* @__PURE__ */ jsx_dev_runtime10.jsxDEV(import_react9.StrictMode, {
   children: /* @__PURE__ */ jsx_dev_runtime10.jsxDEV(App_default, {}, undefined, false, undefined, this)
 }, undefined, false, undefined, this));

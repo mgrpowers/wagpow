@@ -51,9 +51,6 @@ function App() {
 			<Section id="home">
 				<Home />
 			</Section>
-			<Section id="rsvp">
-				<RSVP />
-			</Section>
 			<Section id="schedule">
 				<Schedule />
 			</Section>

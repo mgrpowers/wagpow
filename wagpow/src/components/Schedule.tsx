@@ -1,6 +1,69 @@
+import { db } from "../firebase"
+import { collection, addDoc, getDocs, query, where } from "firebase/firestore"
+import { useEffect, useState } from "react"
+
 export const Schedule = () => {
+	const [currentLocation, setCurrentLocation] = useState(null)
+
+	const getOurCurrentLocation = () => {
+		// get our current location thats stored in the firebase collection called "where"
+		// store in state
+
+		const ourLocation = collection(db, "where")
+		getDocs(ourLocation).then((snapshot) => {
+			const locations = snapshot.docs.map((doc) => doc.data())
+
+			// 			{
+			//     "location": "Taquería Orinoco in La Roma",
+			//     "timestamp": {
+			//         "seconds": 1754524144,
+			//         "nanoseconds": 987000000
+			//     }
+			// }
+
+			console.log("locations", locations)
+			// get most recent location
+			const location = locations.reduce((latest, current) => {
+				return latest.timestamp.seconds > current.timestamp.seconds
+					? latest
+					: current
+			}, locations[0])
+
+			setCurrentLocation(location?.location)
+		})
+	}
+
+	const setOurCurrentLocation = async (location) => {
+		// set our current location in the firebase collection called "where"
+		const ourLocation = collection(db, "where")
+		await addDoc(ourLocation, {
+			location: location,
+			timestamp: new Date(),
+		})
+	}
+
+	useEffect(() => {
+		getOurCurrentLocation()
+
+		// check query params for ?location=<location>
+		// if it exists, set our current location to that value
+		const urlParams = new URLSearchParams(window.location.search)
+		const location = urlParams.get("location")
+		if (location) {
+			setOurCurrentLocation(location)
+		}
+	}, [])
+
 	return (
-		<div className="wp-content">
+		<div className="wp-content things-to">
+			{currentLocation && (
+				<div className="wp-schedule activity-card ">
+					<h2>WagPowTracker5000: </h2>
+					<h3>We are probably at {currentLocation} right now...</h3>
+					<p>Call or text for questions: 831.708.8798</p>
+				</div>
+			)}
+
 			<h1>Schedule</h1>
 			<div className="wp-schedule">
 				<h2>welcome dinner.</h2>
