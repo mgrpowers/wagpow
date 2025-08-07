@@ -43,7 +43,8 @@ const foods: ActivitySection[] = [
 		items: [
 			{
 				name: "Tacos Hola",
-				description: "Mike: torta de coliflor\nJillian: quelites",
+				description:
+					"Closed through august 11th\nMike: torta de coliflor\nJillian: quelites",
 				mapLink: "https://maps.app.goo.gl/SpfCurqybUCfBsyg9",
 				link: "https://www.instagram.com/tacosholaelguero/?hl=en",
 			},

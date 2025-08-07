@@ -36190,7 +36190,8 @@ Jillian: avocado taco`,
     items: [
       {
         name: "Tacos Hola",
-        description: `Mike: torta de coliflor
+        description: `Closed through august 11th
+Mike: torta de coliflor
 Jillian: quelites`,
         mapLink: "https://maps.app.goo.gl/SpfCurqybUCfBsyg9",
         link: "https://www.instagram.com/tacosholaelguero/?hl=en"
