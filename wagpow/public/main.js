@@ -23683,7 +23683,7 @@ var require_jsx_dev_runtime = __commonJS((exports, module) => {
 });
 
 // src/main.tsx
-var import_react9 = __toESM(require_react(), 1);
+var import_react10 = __toESM(require_react(), 1);
 var import_client = __toESM(require_client(), 1);
 // src/hooks/useAuth.tsx
 var import_react2 = __toESM(require_react(), 1);
@@ -36362,6 +36362,7 @@ var ThingsToEat = () => {
   }, undefined, true, undefined, this);
 };
 // src/App.tsx
+var import_react9 = __toESM(require_react(), 1);
 var jsx_dev_runtime9 = __toESM(require_jsx_dev_runtime(), 1);
 var Nav = () => {
   const isMobile = window.innerWidth < 768;
@@ -36402,10 +36403,63 @@ var Nav = () => {
     ]
   }, undefined, true, undefined, this);
 };
+function MikeCheck() {
+  const [gamerTag, setGamerTag] = import_react9.useState("");
+  const [isARealGamer, setIsARealGamer] = import_react9.useState(false);
+  import_react9.useEffect(() => {
+    if (gamerTag) {
+      const gamerTags = [
+        "Ton1c",
+        "C0lin",
+        "uh_ohFox",
+        "Clon1c",
+        "Oz",
+        "Kittenmittens",
+        "Hipperman"
+      ];
+      if (gamerTags.map((tag) => tag.toLowerCase()).includes(gamerTag.toLowerCase())) {
+        setIsARealGamer(true);
+      }
+    }
+  }, [gamerTag]);
+  return /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("div", {
+    className: "wp-content",
+    children: isARealGamer ? /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(jsx_dev_runtime9.Fragment, {
+      children: [
+        /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("h1", {
+          children: "Tell mike or jillian this is a nice party but you rather be gaming."
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("h3", {
+          children: "Even better, tell them what you'd be drinking."
+        }, undefined, false, undefined, this)
+      ]
+    }, undefined, true, undefined, this) : /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(jsx_dev_runtime9.Fragment, {
+      children: [
+        /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("h1", {
+          children: "Wow you're a smartie!"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("h2", {
+          children: "This is for gamers only, please enter you gamer tag"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("input", {
+          onChange: (e) => setGamerTag(e.target.value),
+          type: "text",
+          placeholder: "Enter your gamer tag"
+        }, undefined, false, undefined, this)
+      ]
+    }, undefined, true, undefined, this)
+  }, undefined, false, undefined, this);
+}
 function App() {
   const { authenticated } = useAppStore();
   if (!authenticated) {
     return /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(Login, {}, undefined, false, undefined, this);
+  }
+  if (window.location.pathname === "/oqvivlumhkit") {
+    return /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(Section, {
+      id: "home",
+      children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(MikeCheck, {}, undefined, false, undefined, this)
+    }, undefined, false, undefined, this);
   }
   return /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(jsx_dev_runtime9.Fragment, {
     children: [
@@ -36437,6 +36491,6 @@ var App_default = App;
 
 // src/main.tsx
 var jsx_dev_runtime10 = __toESM(require_jsx_dev_runtime(), 1);
-import_client.createRoot(document.getElementById("root")).render(/* @__PURE__ */ jsx_dev_runtime10.jsxDEV(import_react9.StrictMode, {
+import_client.createRoot(document.getElementById("root")).render(/* @__PURE__ */ jsx_dev_runtime10.jsxDEV(import_react10.StrictMode, {
   children: /* @__PURE__ */ jsx_dev_runtime10.jsxDEV(App_default, {}, undefined, false, undefined, this)
 }, undefined, false, undefined, this));
