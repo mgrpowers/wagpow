@@ -36376,11 +36376,6 @@ var Nav = () => {
       }, undefined, false, undefined, this),
       " ",
       /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("a", {
-        href: "#rsvp",
-        className: "[&.active]:font-bold",
-        children: "RSVP"
-      }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("a", {
         href: "#schedule",
         className: "[&.active]:font-bold",
         children: isMobile ? "\uD83D\uDCC5" : "Schedule"

@@ -20,9 +20,6 @@ const Nav = () => {
 			<a href="#home" className="[&.active]:font-bold">
 				J + M
 			</a>{" "}
-			<a href="#rsvp" className="[&.active]:font-bold">
-				RSVP
-			</a>
 			<a href="#schedule" className="[&.active]:font-bold">
 				{isMobile ? "📅" : "Schedule"}
 			</a>
