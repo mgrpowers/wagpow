@@ -35611,7 +35611,6 @@ var Schedule = () => {
     const ourLocation = collection(db, "where");
     getDocs(ourLocation).then((snapshot) => {
       const locations = snapshot.docs.map((doc2) => doc2.data());
-      console.log("locations", locations);
       const location = locations.reduce((latest, current) => {
         return latest.timestamp.seconds > current.timestamp.seconds ? latest : current;
       }, locations[0]);
@@ -35628,7 +35627,7 @@ var Schedule = () => {
   import_react4.useEffect(() => {
     getOurCurrentLocation();
     const urlParams = new URLSearchParams(window.location.search);
-    const location = urlParams.get("location");
+    const location = urlParams.get("current");
     if (location) {
       setOurCurrentLocation(location);
     }
@@ -36420,15 +36419,10 @@ function MikeCheck() {
   return /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("div", {
     className: "wp-content",
     children: isARealGamer ? /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(jsx_dev_runtime9.Fragment, {
-      children: [
-        /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("h1", {
-          children: "Tell mike or jillian this is a nice party but you rather be gaming."
-        }, undefined, false, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("h3", {
-          children: "Even better, tell them what you'd be drinking."
-        }, undefined, false, undefined, this)
-      ]
-    }, undefined, true, undefined, this) : /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(jsx_dev_runtime9.Fragment, {
+      children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("h1", {
+        children: "Tell mike or jillian this is a nice party but you rather be skateboarding."
+      }, undefined, false, undefined, this)
+    }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(jsx_dev_runtime9.Fragment, {
       children: [
         /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("h1", {
           children: "Wow you're a smartie!"
