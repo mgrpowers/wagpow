@@ -68,9 +68,8 @@ function MikeCheck() {
 				<>
 					<h1>
 						Tell mike or jillian this is a nice party but you rather
-						be gaming.
+						be skateboarding.
 					</h1>
-					<h3>Even better, tell them what you'd be drinking.</h3>
 				</>
 			) : (
 				<>

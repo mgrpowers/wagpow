@@ -21,7 +21,6 @@ export const Schedule = () => {
 			//     }
 			// }
 
-			console.log("locations", locations)
 			// get most recent location
 			const location = locations.reduce((latest, current) => {
 				return latest.timestamp.seconds > current.timestamp.seconds
@@ -34,7 +33,6 @@ export const Schedule = () => {
 	}
 
 	const setOurCurrentLocation = async (location) => {
-		// set our current location in the firebase collection called "where"
 		const ourLocation = collection(db, "where")
 		await addDoc(ourLocation, {
 			location: location,
@@ -45,10 +43,8 @@ export const Schedule = () => {
 	useEffect(() => {
 		getOurCurrentLocation()
 
-		// check query params for ?location=<location>
-		// if it exists, set our current location to that value
 		const urlParams = new URLSearchParams(window.location.search)
-		const location = urlParams.get("location")
+		const location = urlParams.get("current")
 		if (location) {
 			setOurCurrentLocation(location)
 		}
