@@ -20,6 +20,9 @@ const Nav = () => {
 			<a href="#home" className="[&.active]:font-bold">
 				J + M
 			</a>{" "}
+			<a href="#travel" className="[&.active]:font-bold">
+				{isMobile ? "🛫" : "Travel"}
+			</a>
 			<a href="#things-to-do" className="[&.active]:font-bold">
 				{isMobile ? "🚶" : "Things To Do"}
 			</a>
@@ -42,6 +45,10 @@ function App() {
 			<Nav />
 			<Section id="home">
 				<Home />
+			</Section>
+
+			<Section id="travel">
+				<TravelInformation />
 			</Section>
 			<Section id="things-to-do">
 				<ThingsToDo />

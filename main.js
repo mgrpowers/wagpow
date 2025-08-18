@@ -32636,6 +32636,87 @@ var import_react4 = __toESM(require_react(), 1);
 var jsx_dev_runtime5 = __toESM(require_jsx_dev_runtime(), 1);
 // src/components/TravelInformation.tsx
 var jsx_dev_runtime6 = __toESM(require_jsx_dev_runtime(), 1);
+var TravelInformation = () => {
+  return /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
+    className: "wp-content",
+    children: [
+      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("h1", {
+        children: "Travel Information"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("h2", {
+        children: "Passport"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("p", {
+        children: [
+          "Mexico requires that your passport is valid upon entry to the country. For additional information, please visit the Mexican government's",
+          " ",
+          /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("a", {
+            target: "_blank",
+            href: "https://consulmex.sre.gob.mx/montreal/index.php/en/foreigners/visa/355-what-documents-do-i-need-to-enter-mexico",
+            children: "website"
+          }, undefined, false, undefined, this),
+          "."
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("h2", {
+        children: "Travel to Mexico City"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("p", {
+        children: "We suggest flying into Mexico City's main airport, Mexico City International Airport Benito Juárez (airport code MEX). The other airports that may show up when searching for flights are far outside the city."
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("h2", {
+        children: "Travel within Mexico City"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("p", {
+        children: "We suggest using ridesharing applications (we use Uber) to travel from the airport to your accommodations. We DO NOT recommend renting a car, as the roads can be difficult and parking is complicated. Once you are at your accommodations, Mexico City is walkable, public transit is reliable, and ridesharing cars are plentiful."
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("h2", {
+        children: "Accommodations"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("p", {
+        children: "We lived in the Condesa neighborhood when we lived in Mexico City, and we recommend our guests stay in either the Condesa or Roma neighborhoods. There are lots of lovely smaller hotels in the neighborhood that have a lot of character. Please ask us if you have questions about specific hotels or neighborhoods. Please check back for more information."
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("h2", {
+        children: "Other Information"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("p", {
+        children: [
+          "Mexico City is a wonderful city with the normal security concerns that come with large cities. The Mexico City government has some tips",
+          " ",
+          /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("a", {
+            href: "https://mexicocity.cdmx.gob.mx/e/basics-for-mexico-city-travel/",
+            target: "_blank",
+            children: "here"
+          }, undefined, false, undefined, this),
+          "."
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("p", {
+        children: "Mexico City is at high altitude (~7,350 feet), so it is important to remain hydrated. We suggest drinking bottled water and other beverages."
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("p", {
+        children: "In August, the average daytime temperature is in the upper 70˚s and the evenings are in the 50˚s."
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("hr", {}, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("h2", {
+        children: "Registry"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("p", {
+        children: 'We appreciate the effort required to join us in Mexico City to celebrate our wedding. If it is important to you, please consider donating to the Institute for Women in Migration ("IMUMI"), where Jillian worked for two years while living in Mexico City. IMUMI supports women migrants and their families by providing legal assistance and advocating for better immigration policies on both sides of the border. IMUMI has adapted and expanded to respond to the changing immigration landscape, providing competent and compassionate legal advice to migrants and their families in the region.'
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("p", {
+        children: "Money donated to IMUMI in honor of our wedding will be specifically directed to fund legal representation for women and families seeking asylum in Mexico. Some of the money will also be used to provide dignity kits for families who have been deported from the United States to help them start rebuilding their lives in Mexico."
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("p", {
+        children: /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("a", {
+          href: "https://www.paypal.com/donate/?hosted_button_id=UYKE5HN8L3Z22",
+          target: "_blank",
+          children: "You can make a donation here."
+        }, undefined, false, undefined, this)
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+};
 // src/components/ThingsToDo.tsx
 var import_react7 = __toESM(require_react(), 1);
 
@@ -33166,6 +33247,11 @@ var Nav = () => {
       }, undefined, false, undefined, this),
       " ",
       /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("a", {
+        href: "#travel",
+        className: "[&.active]:font-bold",
+        children: isMobile ? "\uD83D\uDEEB" : "Travel"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("a", {
         href: "#things-to-do",
         className: "[&.active]:font-bold",
         children: isMobile ? "\uD83D\uDEB6" : "Things To Do"
@@ -33189,6 +33275,10 @@ function App() {
       /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(Section, {
         id: "home",
         children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(Home, {}, undefined, false, undefined, this)
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(Section, {
+        id: "travel",
+        children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(TravelInformation, {}, undefined, false, undefined, this)
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(Section, {
         id: "things-to-do",
